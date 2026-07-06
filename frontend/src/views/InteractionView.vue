@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">AI SWARM</div>
+        <div class="brand" @click="router.push('/')">AI <span class="accent">Swarm</span></div>
       </div>
 
       <div class="header-center">
@@ -243,11 +243,15 @@ onMounted(() => {
 }
 
 .brand {
-  font-family: var(--font-mono);
-  font-weight: 800;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: 18px;
-  letter-spacing: 1px;
+  color: var(--ink);
   cursor: pointer;
+}
+
+.brand .accent {
+  color: var(--accent);
 }
 
 .view-switcher {
