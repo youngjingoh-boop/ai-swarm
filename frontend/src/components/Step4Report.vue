@@ -58,7 +58,7 @@
                       <path d="M12 2a10 10 0 0 1 10 10" stroke-width="4" stroke="#4B5563" stroke-linecap="round"></path>
                     </svg>
                   </div>
-                  <span class="loading-text">正在生成{{ section.title }}...</span>
+                  <span class="loading-text">Writing {{ section.title }}...</span>
                 </div>
               </div>
             </div>
@@ -127,9 +127,9 @@
             </div>
           </div>
 
-          <!-- Next Step Button - 在完成后显示 -->
+          <!-- Next Step Button - shown after completion -->
           <button v-if="isComplete" class="next-step-btn" @click="goToInteraction">
-            <span>进入深度互动</span>
+            <span>Enter deep interaction</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
@@ -1003,7 +1003,7 @@ const InsightDisplay = {
         ]),
         props.result.query && h('div', { class: 'header-topic' }, props.result.query),
         props.result.simulationRequirement && h('div', { class: 'header-scenario' }, [
-          h('span', { class: 'scenario-label' }, '预测场景: '),
+          h('span', { class: 'scenario-label' }, 'Prediction scenario: '),
           h('span', { class: 'scenario-text' }, props.result.simulationRequirement)
         ])
       ]),
@@ -1014,25 +1014,25 @@ const InsightDisplay = {
           class: ['insight-tab', { active: activeTab.value === 'facts' }],
           onClick: () => { activeTab.value = 'facts' }
         }, [
-          h('span', { class: 'tab-label' }, `当前关键记忆 (${props.result.facts.length})`)
+          h('span', { class: 'tab-label' }, `Key memories (${props.result.facts.length})`)
         ]),
         h('button', {
           class: ['insight-tab', { active: activeTab.value === 'entities' }],
           onClick: () => { activeTab.value = 'entities' }
         }, [
-          h('span', { class: 'tab-label' }, `核心实体 (${props.result.entities.length})`)
+          h('span', { class: 'tab-label' }, `Core entities (${props.result.entities.length})`)
         ]),
         h('button', {
           class: ['insight-tab', { active: activeTab.value === 'relations' }],
           onClick: () => { activeTab.value = 'relations' }
         }, [
-          h('span', { class: 'tab-label' }, `关系链 (${props.result.relations.length})`)
+          h('span', { class: 'tab-label' }, `Relation chains (${props.result.relations.length})`)
         ]),
         props.result.subQueries.length > 0 && h('button', {
           class: ['insight-tab', { active: activeTab.value === 'subqueries' }],
           onClick: () => { activeTab.value = 'subqueries' }
         }, [
-          h('span', { class: 'tab-label' }, `子问题 (${props.result.subQueries.length})`)
+          h('span', { class: 'tab-label' }, `Sub-questions (${props.result.subQueries.length})`)
         ])
       ]),
       
@@ -1041,11 +1041,11 @@ const InsightDisplay = {
         // Facts Tab
         activeTab.value === 'facts' && props.result.facts.length > 0 && h('div', { class: 'facts-panel' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '时序记忆中所关联的最新关键事实'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.facts.length} 条`)
+            h('span', { class: 'panel-title' }, 'Latest key facts linked in temporal memory'),
+            h('span', { class: 'panel-count' }, `${props.result.facts.length} total`)
           ]),
           h('div', { class: 'facts-list' },
-            (expandedFacts.value ? props.result.facts : props.result.facts.slice(0, INITIAL_SHOW_COUNT)).map((fact, i) => 
+            (expandedFacts.value ? props.result.facts : props.result.facts.slice(0, INITIAL_SHOW_COUNT)).map((fact, i) =>
               h('div', { class: 'fact-item', key: i }, [
                 h('span', { class: 'fact-number' }, i + 1),
                 h('div', { class: 'fact-content' }, fact)
@@ -1055,35 +1055,35 @@ const InsightDisplay = {
           props.result.facts.length > INITIAL_SHOW_COUNT && h('button', {
             class: 'expand-btn',
             onClick: () => { expandedFacts.value = !expandedFacts.value }
-          }, expandedFacts.value ? `收起 ▲` : `展开全部 ${props.result.facts.length} 条 ▼`)
+          }, expandedFacts.value ? `Collapse ▲` : `Show all ${props.result.facts.length} ▼`)
         ]),
         
         // Entities Tab
         activeTab.value === 'entities' && props.result.entities.length > 0 && h('div', { class: 'entities-panel' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '核心实体'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.entities.length} 个`)
+            h('span', { class: 'panel-title' }, 'Core entities'),
+            h('span', { class: 'panel-count' }, `${props.result.entities.length} total`)
           ]),
           h('div', { class: 'entities-grid' },
-            (expandedEntities.value ? props.result.entities : props.result.entities.slice(0, 12)).map((entity, i) => 
+            (expandedEntities.value ? props.result.entities : props.result.entities.slice(0, 12)).map((entity, i) =>
               h('div', { class: 'entity-tag', key: i, title: entity.summary || '' }, [
                 h('span', { class: 'entity-name' }, entity.name),
                 h('span', { class: 'entity-type' }, entity.type),
-                entity.relatedFactsCount > 0 && h('span', { class: 'entity-fact-count' }, `${entity.relatedFactsCount}条`)
+                entity.relatedFactsCount > 0 && h('span', { class: 'entity-fact-count' }, `${entity.relatedFactsCount}`)
               ])
             )
           ),
           props.result.entities.length > 12 && h('button', {
             class: 'expand-btn',
             onClick: () => { expandedEntities.value = !expandedEntities.value }
-          }, expandedEntities.value ? `收起 ▲` : `展开全部 ${props.result.entities.length} 个 ▼`)
+          }, expandedEntities.value ? `Collapse ▲` : `Show all ${props.result.entities.length} ▼`)
         ]),
-        
+
         // Relations Tab
         activeTab.value === 'relations' && props.result.relations.length > 0 && h('div', { class: 'relations-panel' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '关系链'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.relations.length} 条`)
+            h('span', { class: 'panel-title' }, 'Relation chains'),
+            h('span', { class: 'panel-count' }, `${props.result.relations.length} total`)
           ]),
           h('div', { class: 'relations-list' },
             (expandedRelations.value ? props.result.relations : props.result.relations.slice(0, INITIAL_SHOW_COUNT)).map((rel, i) => 
@@ -1101,14 +1101,14 @@ const InsightDisplay = {
           props.result.relations.length > INITIAL_SHOW_COUNT && h('button', {
             class: 'expand-btn',
             onClick: () => { expandedRelations.value = !expandedRelations.value }
-          }, expandedRelations.value ? `收起 ▲` : `展开全部 ${props.result.relations.length} 条 ▼`)
+          }, expandedRelations.value ? `Collapse ▲` : `Show all ${props.result.relations.length} ▼`)
         ]),
-        
+
         // Sub-queries Tab
         activeTab.value === 'subqueries' && props.result.subQueries.length > 0 && h('div', { class: 'subqueries-panel' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '漂移查询生成分析子问题'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.subQueries.length} 个`)
+            h('span', { class: 'panel-title' }, 'Sub-questions generated for drift queries'),
+            h('span', { class: 'panel-count' }, `${props.result.subQueries.length} total`)
           ]),
           h('div', { class: 'subqueries-list' },
             props.result.subQueries.map((sq, i) => 
@@ -1121,9 +1121,9 @@ const InsightDisplay = {
         ]),
         
         // Empty state
-        activeTab.value === 'facts' && props.result.facts.length === 0 && h('div', { class: 'empty-state' }, '暂无当前关键记忆'),
-        activeTab.value === 'entities' && props.result.entities.length === 0 && h('div', { class: 'empty-state' }, '暂无核心实体'),
-        activeTab.value === 'relations' && props.result.relations.length === 0 && h('div', { class: 'empty-state' }, '暂无关系链')
+        activeTab.value === 'facts' && props.result.facts.length === 0 && h('div', { class: 'empty-state' }, 'No key memories yet'),
+        activeTab.value === 'entities' && props.result.entities.length === 0 && h('div', { class: 'empty-state' }, 'No core entities yet'),
+        activeTab.value === 'relations' && props.result.relations.length === 0 && h('div', { class: 'empty-state' }, 'No relation chains yet')
       ])
     ])
   }
@@ -1176,19 +1176,19 @@ const PanoramaDisplay = {
           class: ['panorama-tab', { active: activeTab.value === 'active' }],
           onClick: () => { activeTab.value = 'active' }
         }, [
-          h('span', { class: 'tab-label' }, `当前有效记忆 (${props.result.activeFacts.length})`)
+          h('span', { class: 'tab-label' }, `Active memories (${props.result.activeFacts.length})`)
         ]),
         h('button', {
           class: ['panorama-tab', { active: activeTab.value === 'historical' }],
           onClick: () => { activeTab.value = 'historical' }
         }, [
-          h('span', { class: 'tab-label' }, `历史记忆 (${props.result.historicalFacts.length})`)
+          h('span', { class: 'tab-label' }, `Historical memories (${props.result.historicalFacts.length})`)
         ]),
         h('button', {
           class: ['panorama-tab', { active: activeTab.value === 'entities' }],
           onClick: () => { activeTab.value = 'entities' }
         }, [
-          h('span', { class: 'tab-label' }, `涉及实体 (${props.result.entities.length})`)
+          h('span', { class: 'tab-label' }, `Involved entities (${props.result.entities.length})`)
         ])
       ]),
       
@@ -1197,35 +1197,35 @@ const PanoramaDisplay = {
         // Active Facts Tab
         activeTab.value === 'active' && h('div', { class: 'facts-panel active-facts' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '当前有效记忆'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.activeFacts.length} 条`)
+            h('span', { class: 'panel-title' }, 'Active memories'),
+            h('span', { class: 'panel-count' }, `${props.result.activeFacts.length} total`)
           ]),
           props.result.activeFacts.length > 0 ? h('div', { class: 'facts-list' },
-            (expandedActive.value ? props.result.activeFacts : props.result.activeFacts.slice(0, INITIAL_SHOW_COUNT)).map((fact, i) => 
+            (expandedActive.value ? props.result.activeFacts : props.result.activeFacts.slice(0, INITIAL_SHOW_COUNT)).map((fact, i) =>
               h('div', { class: 'fact-item active', key: i }, [
                 h('span', { class: 'fact-number' }, i + 1),
                 h('div', { class: 'fact-content' }, fact)
               ])
             )
-          ) : h('div', { class: 'empty-state' }, '暂无当前有效记忆'),
+          ) : h('div', { class: 'empty-state' }, 'No active memories yet'),
           props.result.activeFacts.length > INITIAL_SHOW_COUNT && h('button', {
             class: 'expand-btn',
             onClick: () => { expandedActive.value = !expandedActive.value }
-          }, expandedActive.value ? `收起 ▲` : `展开全部 ${props.result.activeFacts.length} 条 ▼`)
+          }, expandedActive.value ? `Collapse ▲` : `Show all ${props.result.activeFacts.length} ▼`)
         ]),
-        
+
         // Historical Facts Tab
         activeTab.value === 'historical' && h('div', { class: 'facts-panel historical-facts' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '历史记忆'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.historicalFacts.length} 条`)
+            h('span', { class: 'panel-title' }, 'Historical memories'),
+            h('span', { class: 'panel-count' }, `${props.result.historicalFacts.length} total`)
           ]),
           props.result.historicalFacts.length > 0 ? h('div', { class: 'facts-list' },
             (expandedHistorical.value ? props.result.historicalFacts : props.result.historicalFacts.slice(0, INITIAL_SHOW_COUNT)).map((fact, i) => 
               h('div', { class: 'fact-item historical', key: i }, [
                 h('span', { class: 'fact-number' }, i + 1),
                 h('div', { class: 'fact-content' }, [
-                  // 尝试提取时间信息 [time - time]
+                  // Try to extract time info [time - time]
                   (() => {
                     const timeMatch = fact.match(/^\[(.+?)\]\s*(.*)$/)
                     if (timeMatch) {
@@ -1239,31 +1239,31 @@ const PanoramaDisplay = {
                 ])
               ])
             )
-          ) : h('div', { class: 'empty-state' }, '暂无历史记忆'),
+          ) : h('div', { class: 'empty-state' }, 'No historical memories yet'),
           props.result.historicalFacts.length > INITIAL_SHOW_COUNT && h('button', {
             class: 'expand-btn',
             onClick: () => { expandedHistorical.value = !expandedHistorical.value }
-          }, expandedHistorical.value ? `收起 ▲` : `展开全部 ${props.result.historicalFacts.length} 条 ▼`)
+          }, expandedHistorical.value ? `Collapse ▲` : `Show all ${props.result.historicalFacts.length} ▼`)
         ]),
-        
+
         // Entities Tab
         activeTab.value === 'entities' && h('div', { class: 'entities-panel' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '涉及实体'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.entities.length} 个`)
+            h('span', { class: 'panel-title' }, 'Involved entities'),
+            h('span', { class: 'panel-count' }, `${props.result.entities.length} total`)
           ]),
           props.result.entities.length > 0 ? h('div', { class: 'entities-grid' },
-            (expandedEntities.value ? props.result.entities : props.result.entities.slice(0, 8)).map((entity, i) => 
+            (expandedEntities.value ? props.result.entities : props.result.entities.slice(0, 8)).map((entity, i) =>
               h('div', { class: 'entity-tag', key: i }, [
                 h('span', { class: 'entity-name' }, entity.name),
                 entity.type && h('span', { class: 'entity-type' }, entity.type)
               ])
             )
-          ) : h('div', { class: 'empty-state' }, '暂无涉及实体'),
+          ) : h('div', { class: 'empty-state' }, 'No involved entities yet'),
           props.result.entities.length > 8 && h('button', {
             class: 'expand-btn',
             onClick: () => { expandedEntities.value = !expandedEntities.value }
-          }, expandedEntities.value ? `收起 ▲` : `展开全部 ${props.result.entities.length} 个 ▼`)
+          }, expandedEntities.value ? `Collapse ▲` : `Show all ${props.result.entities.length} ▼`)
         ])
       ])
     ])
@@ -1465,13 +1465,13 @@ const InterviewDisplay = {
           ])
         ]),
         
-        // Selection Reason - 选择理由
+        // Selection Reason
         props.result.interviews[activeIndex.value]?.selectionReason && h('div', { class: 'selection-reason' }, [
-          h('div', { class: 'reason-label' }, '选择理由'),
+          h('div', { class: 'reason-label' }, 'Why this agent was selected'),
           h('div', { class: 'reason-content' }, props.result.interviews[activeIndex.value].selectionReason)
         ]),
-        
-        // Q&A Conversation Thread - 一问一答样式
+
+        // Q&A Conversation Thread - one question per answer
         h('div', { class: 'qa-thread' }, 
           (props.result.interviews[activeIndex.value]?.questions?.length > 0 
             ? props.result.interviews[activeIndex.value].questions 
@@ -1501,7 +1501,7 @@ const InterviewDisplay = {
                 h('div', { class: 'qa-content' }, [
                   h('div', { class: 'qa-answer-header' }, [
                     h('div', { class: 'qa-sender' }, interview?.name || 'Agent'),
-                    // 双平台切换按钮（仅在有真实双平台回答时显示）
+                    // Dual-platform toggle (only shown when there are real dual-platform answers)
                     hasDualPlatform && h('div', { class: 'platform-switch' }, [
                       h('button', {
                         class: ['platform-btn', { active: currentPlatform === 'twitter' }],
@@ -1512,7 +1512,7 @@ const InterviewDisplay = {
                           h('line', { x1: '2', y1: '12', x2: '22', y2: '12' }),
                           h('path', { d: 'M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z' })
                         ]),
-                        h('span', {}, '世界1')
+                        h('span', {}, 'World 1')
                       ]),
                       h('button', {
                         class: ['platform-btn', { active: currentPlatform === 'reddit' }],
@@ -1521,7 +1521,7 @@ const InterviewDisplay = {
                         h('svg', { class: 'platform-icon', viewBox: '0 0 24 24', width: 12, height: 12, fill: 'none', stroke: 'currentColor', 'stroke-width': 2 }, [
                           h('path', { d: 'M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z' })
                         ]),
-                        h('span', {}, '世界2')
+                        h('span', {}, 'World 2')
                       ])
                     ])
                   ]),
@@ -1533,7 +1533,7 @@ const InterviewDisplay = {
                           .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
                           .replace(/\n/g, '<br>')
                   }),
-                  // Expand/Collapse Button（占位文本不显示）
+                  // Expand/Collapse Button (hidden for placeholder text)
                   !isPlaceholder && answerText.length > 400 && h('button', {
                     class: 'expand-answer-btn',
                     onClick: () => toggleAnswer(expandKey)
@@ -1610,7 +1610,7 @@ const QuickSearchDisplay = {
           ])
         ]),
         props.result.query && h('div', { class: 'header-query' }, [
-          h('span', { class: 'query-label' }, '搜索: '),
+          h('span', { class: 'query-label' }, 'Search: '),
           h('span', { class: 'query-text' }, props.result.query)
         ])
       ]),
@@ -1621,19 +1621,19 @@ const QuickSearchDisplay = {
           class: ['quicksearch-tab', { active: activeTab.value === 'facts' }],
           onClick: () => { activeTab.value = 'facts' }
         }, [
-          h('span', { class: 'tab-label' }, `事实 (${props.result.facts.length})`)
+          h('span', { class: 'tab-label' }, `Facts (${props.result.facts.length})`)
         ]),
         hasEdges.value && h('button', {
           class: ['quicksearch-tab', { active: activeTab.value === 'edges' }],
           onClick: () => { activeTab.value = 'edges' }
         }, [
-          h('span', { class: 'tab-label' }, `关系 (${props.result.edges.length})`)
+          h('span', { class: 'tab-label' }, `Relations (${props.result.edges.length})`)
         ]),
         hasNodes.value && h('button', {
           class: ['quicksearch-tab', { active: activeTab.value === 'nodes' }],
           onClick: () => { activeTab.value = 'nodes' }
         }, [
-          h('span', { class: 'tab-label' }, `节点 (${props.result.nodes.length})`)
+          h('span', { class: 'tab-label' }, `Nodes (${props.result.nodes.length})`)
         ])
       ]),
       
@@ -1642,28 +1642,28 @@ const QuickSearchDisplay = {
         // Facts (always show if no tabs, or when facts tab is active)
         ((!showTabs.value) || activeTab.value === 'facts') && h('div', { class: 'facts-panel' }, [
           !showTabs.value && h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '搜索结果'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.facts.length} 条`)
+            h('span', { class: 'panel-title' }, 'Search results'),
+            h('span', { class: 'panel-count' }, `${props.result.facts.length} total`)
           ]),
           props.result.facts.length > 0 ? h('div', { class: 'facts-list' },
-            (expandedFacts.value ? props.result.facts : props.result.facts.slice(0, INITIAL_SHOW_COUNT)).map((fact, i) => 
+            (expandedFacts.value ? props.result.facts : props.result.facts.slice(0, INITIAL_SHOW_COUNT)).map((fact, i) =>
               h('div', { class: 'fact-item', key: i }, [
                 h('span', { class: 'fact-number' }, i + 1),
                 h('div', { class: 'fact-content' }, fact)
               ])
             )
-          ) : h('div', { class: 'empty-state' }, '未找到相关结果'),
+          ) : h('div', { class: 'empty-state' }, 'No matching results found'),
           props.result.facts.length > INITIAL_SHOW_COUNT && h('button', {
             class: 'expand-btn',
             onClick: () => { expandedFacts.value = !expandedFacts.value }
-          }, expandedFacts.value ? `收起 ▲` : `展开全部 ${props.result.facts.length} 条 ▼`)
+          }, expandedFacts.value ? `Collapse ▲` : `Show all ${props.result.facts.length} ▼`)
         ]),
-        
+
         // Edges Tab
         activeTab.value === 'edges' && hasEdges.value && h('div', { class: 'edges-panel' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '相关关系'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.edges.length} 条`)
+            h('span', { class: 'panel-title' }, 'Related relations'),
+            h('span', { class: 'panel-count' }, `${props.result.edges.length} total`)
           ]),
           h('div', { class: 'edges-list' },
             props.result.edges.map((edge, i) => 
@@ -1683,8 +1683,8 @@ const QuickSearchDisplay = {
         // Nodes Tab
         activeTab.value === 'nodes' && hasNodes.value && h('div', { class: 'nodes-panel' }, [
           h('div', { class: 'panel-header' }, [
-            h('span', { class: 'panel-title' }, '相关节点'),
-            h('span', { class: 'panel-count' }, `共 ${props.result.nodes.length} 个`)
+            h('span', { class: 'panel-title' }, 'Related nodes'),
+            h('span', { class: 'panel-count' }, `${props.result.nodes.length} total`)
           ]),
           h('div', { class: 'nodes-grid' },
             props.result.nodes.map((node, i) => 
@@ -1764,19 +1764,19 @@ const isFinalizing = computed(() => {
   return !isComplete.value && isPlanningDone.value && totalSections.value > 0 && completedSections.value >= totalSections.value
 })
 
-// 当前活跃的步骤（用于顶部显示）
+// Currently active step (used for top display)
 const activeStep = computed(() => {
   const steps = workflowSteps.value
-  // 找到当前 active 的步骤
+  // Find the current active step
   const active = steps.find(s => s.status === 'active')
   if (active) return active
-  
-  // 如果没有 active，返回最后一个 done 的步骤
+
+  // If no active step, return the last done step
   const doneSteps = steps.filter(s => s.status === 'done')
   if (doneSteps.length > 0) return doneSteps[doneSteps.length - 1]
-  
-  // 否则返回第一个步骤
-  return steps[0] || { noLabel: '--', title: '等待开始', status: 'todo', meta: '' }
+
+  // Otherwise return the first step
+  return steps[0] || { noLabel: '--', title: 'Waiting to start', status: 'todo', meta: '' }
 })
 
 const workflowSteps = computed(() => {
@@ -2208,7 +2208,7 @@ watch(() => props.reportId, (newId) => {
   display: flex;
   flex-direction: column;
   background: #F8F9FA;
-  font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+  font-family: var(--font-sans);
   overflow: hidden;
 }
 
@@ -2225,11 +2225,11 @@ watch(() => props.reportId, (newId) => {
   align-items: center;
   gap: 10px;
   padding: 14px 20px;
-  background: #FFFFFF;
-  border-bottom: 1px solid #E5E7EB;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   position: sticky;
@@ -2241,7 +2241,7 @@ watch(() => props.reportId, (newId) => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #1F2937;
+  background: var(--ink);
   box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.15);
   margin-right: 10px;
   flex-shrink: 0;
@@ -2260,7 +2260,7 @@ watch(() => props.reportId, (newId) => {
 .header-index {
   font-size: 12px;
   font-weight: 600;
-  color: #9CA3AF;
+  color: var(--muted);
   margin-right: 10px;
   flex-shrink: 0;
 }
@@ -2268,7 +2268,7 @@ watch(() => props.reportId, (newId) => {
 .header-title {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2280,26 +2280,26 @@ watch(() => props.reportId, (newId) => {
   margin-left: auto;
   font-size: 10px;
   font-weight: 600;
-  color: #6B7280;
+  color: var(--muted);
   flex-shrink: 0;
 }
 
 /* Panel header status variants */
 .panel-header--active {
   background: #FAFAFA;
-  border-color: #1F2937;
+  border-color: var(--ink);
 }
 
 .panel-header--active .header-index {
-  color: #1F2937;
+  color: var(--ink);
 }
 
 .panel-header--active .header-title {
-  color: #1F2937;
+  color: var(--ink);
 }
 
 .panel-header--active .header-meta {
-  color: #1F2937;
+  color: var(--ink);
 }
 
 .panel-header--done {
@@ -2312,15 +2312,15 @@ watch(() => props.reportId, (newId) => {
 
 .panel-header--todo .header-index,
 .panel-header--todo .header-title {
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 /* Left Panel - Report Style */
 .left-panel.report-style {
   width: 45%;
   min-width: 450px;
-  background: #FFFFFF;
-  border-right: 1px solid #E5E7EB;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -2368,8 +2368,8 @@ watch(() => props.reportId, (newId) => {
 }
 
 .report-tag {
-  background: #000000;
-  color: #FFFFFF;
+  background: var(--ink);
+  color: var(--surface);
   font-size: 11px;
   font-weight: 700;
   padding: 4px 8px;
@@ -2379,7 +2379,7 @@ watch(() => props.reportId, (newId) => {
 
 .report-id {
   font-size: 11px;
-  color: #9CA3AF;
+  color: var(--muted);
   font-weight: 500;
   letter-spacing: 0.02em;
 }
@@ -2388,7 +2388,7 @@ watch(() => props.reportId, (newId) => {
   font-family: 'Times New Roman', Times, serif;
   font-size: 36px;
   font-weight: 700;
-  color: #111827;
+  color: var(--ink);
   line-height: 1.2;
   margin: 0 0 16px 0;
   letter-spacing: -0.02em;
@@ -2397,7 +2397,7 @@ watch(() => props.reportId, (newId) => {
 .sub-title {
   font-family: 'Times New Roman', Times, serif;
   font-size: 16px;
-  color: #6B7280;
+  color: var(--muted);
   font-style: italic;
   line-height: 1.6;
   margin: 0 0 30px 0;
@@ -2406,7 +2406,7 @@ watch(() => props.reportId, (newId) => {
 
 .header-divider {
   height: 1px;
-  background: #E5E7EB;
+  background: var(--border);
   width: 100%;
 }
 
@@ -2443,7 +2443,7 @@ watch(() => props.reportId, (newId) => {
 
 .collapse-icon {
   margin-left: auto;
-  color: #9CA3AF;
+  color: var(--muted);
   transition: transform 0.3s ease;
   flex-shrink: 0;
   align-self: center;
@@ -2454,9 +2454,9 @@ watch(() => props.reportId, (newId) => {
 }
 
 .section-number {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 16px;
-  color: #9CA3AF; /* 深灰色，不随状态变化 */
+  color: var(--muted); /* 深灰色，不随状态变化 */
   font-weight: 500;
 }
 
@@ -2464,7 +2464,7 @@ watch(() => props.reportId, (newId) => {
   font-family: 'Times New Roman', Times, serif;
   font-size: 24px;
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
   margin: 0;
   transition: color 0.3s ease;
 }
@@ -2476,7 +2476,7 @@ watch(() => props.reportId, (newId) => {
 
 .report-section-item.is-active .section-title,
 .report-section-item.is-completed .section-title {
-  color: #111827;
+  color: var(--ink);
 }
 
 .section-body {
@@ -2486,10 +2486,10 @@ watch(() => props.reportId, (newId) => {
 
 /* Generated Content */
 .generated-content {
-  font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.8;
-  color: #374151;
+  color: var(--ink);
 }
 
 .generated-content :deep(p) {
@@ -2500,7 +2500,7 @@ watch(() => props.reportId, (newId) => {
 .generated-content :deep(.md-h3),
 .generated-content :deep(.md-h4) {
   font-family: 'Times New Roman', Times, serif;
-  color: #111827;
+  color: var(--ink);
   margin-top: 1.5em;
   margin-bottom: 0.8em;
   font-weight: 700;
@@ -2522,10 +2522,10 @@ watch(() => props.reportId, (newId) => {
 }
 
 .generated-content :deep(.md-quote) {
-  border-left: 3px solid #E5E7EB;
+  border-left: 3px solid var(--border);
   padding-left: 16px;
   margin: 1.5em 0;
-  color: #6B7280;
+  color: var(--muted);
   font-style: italic;
   font-family: 'Times New Roman', Times, serif;
 }
@@ -2534,16 +2534,16 @@ watch(() => props.reportId, (newId) => {
   background: #F9FAFB;
   padding: 12px;
   border-radius: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   overflow-x: auto;
   margin: 1em 0;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
 }
 
 .generated-content :deep(strong) {
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
 }
 
 /* Loading State */
@@ -2551,7 +2551,7 @@ watch(() => props.reportId, (newId) => {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #6B7280;
+  color: var(--muted);
   font-size: 14px;
   margin-top: 4px;
 }
@@ -2625,7 +2625,7 @@ watch(() => props.reportId, (newId) => {
   justify-content: center;
   gap: 20px;
   padding: 40px;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 .waiting-animation {
@@ -2638,7 +2638,7 @@ watch(() => props.reportId, (newId) => {
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--border);
   border-radius: 50%;
   animation: ripple 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
@@ -2663,26 +2663,26 @@ watch(() => props.reportId, (newId) => {
 /* Right Panel */
 .right-panel {
   flex: 1;
-  background: #FFFFFF;
+  background: var(--surface);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
 
   /* Functional palette (low saturation, status-based) */
-  --wf-border: #E5E7EB;
+  --wf-border: var(--border);
   --wf-divider: #F3F4F6;
 
   --wf-active-bg: #FAFAFA;
-  --wf-active-border: #1F2937;
-  --wf-active-dot: #1F2937;
-  --wf-active-text: #1F2937;
+  --wf-active-border: var(--ink);
+  --wf-active-dot: var(--ink);
+  --wf-active-text: var(--ink);
 
   --wf-done-bg: #F9FAFB;
-  --wf-done-border: #E5E7EB;
+  --wf-done-border: var(--border);
   --wf-done-dot: #10B981;
 
   --wf-muted-dot: #D1D5DB;
-  --wf-todo-text: #9CA3AF;
+  --wf-todo-text: var(--muted);
 }
 
 .right-panel::-webkit-scrollbar {
@@ -2708,7 +2708,7 @@ watch(() => props.reportId, (newId) => {
 }
 
 .mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
 }
 
 /* Workflow Overview */
@@ -2737,14 +2737,14 @@ watch(() => props.reportId, (newId) => {
 .metric-label {
   font-size: 11px;
   font-weight: 600;
-  color: #9CA3AF;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .metric-value {
   font-size: 12px;
-  color: #374151;
+  color: var(--ink);
 }
 
 .metric-pill {
@@ -2756,7 +2756,7 @@ watch(() => props.reportId, (newId) => {
   border-radius: 999px;
   border: 1px solid var(--wf-border);
   background: #F9FAFB;
-  color: #6B7280;
+  color: var(--muted);
 }
 
 .metric-pill.pill--processing {
@@ -2774,7 +2774,7 @@ watch(() => props.reportId, (newId) => {
 .metric-pill.pill--pending {
   background: transparent;
   border-style: dashed;
-  color: #6B7280;
+  color: var(--muted);
 }
 
 .workflow-steps {
@@ -2791,7 +2791,7 @@ watch(() => props.reportId, (newId) => {
   padding: 10px 12px;
   border: 1px solid var(--wf-divider);
   border-radius: 8px;
-  background: #FFFFFF;
+  background: var(--surface);
 }
 
 .wf-step--active {
@@ -2823,7 +2823,7 @@ watch(() => props.reportId, (newId) => {
   height: 10px;
   border-radius: 50%;
   background: var(--wf-muted-dot);
-  border: 2px solid #FFFFFF;
+  border: 2px solid var(--surface);
   z-index: 1;
 }
 
@@ -2853,7 +2853,7 @@ watch(() => props.reportId, (newId) => {
 .wf-step-index {
   font-size: 11px;
   font-weight: 700;
-  color: #9CA3AF;
+  color: var(--muted);
   letter-spacing: 0.02em;
   flex-shrink: 0;
 }
@@ -2862,7 +2862,7 @@ watch(() => props.reportId, (newId) => {
   font-family: 'Times New Roman', Times, serif;
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
   line-height: 1.35;
   min-width: 0;
   overflow: hidden;
@@ -2905,7 +2905,7 @@ watch(() => props.reportId, (newId) => {
   margin-bottom: 10px;
   border: 1px solid var(--wf-divider);
   border-radius: 8px;
-  background: #FFFFFF;
+  background: var(--surface);
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
@@ -2947,7 +2947,7 @@ watch(() => props.reportId, (newId) => {
   height: 12px;
   border-radius: 50%;
   background: var(--wf-muted-dot);
-  border: 2px solid #FFFFFF;
+  border: 2px solid var(--surface);
   z-index: 1;
 }
 
@@ -2996,15 +2996,15 @@ watch(() => props.reportId, (newId) => {
 .action-label {
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .action-time {
   font-size: 11px;
-  color: #9CA3AF;
-  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+  font-family: var(--font-mono);
 }
 
 .timeline-body {
@@ -3033,11 +3033,11 @@ watch(() => props.reportId, (newId) => {
 
 .elapsed-badge {
   font-size: 11px;
-  color: #6B7280;
+  color: var(--muted);
   background: #F3F4F6;
   padding: 2px 8px;
   border-radius: 10px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
 }
 
 /* Timeline Body Elements */
@@ -3049,12 +3049,12 @@ watch(() => props.reportId, (newId) => {
 
 .info-key {
   font-size: 11px;
-  color: #9CA3AF;
+  color: var(--muted);
   min-width: 80px;
 }
 
 .info-val {
-  color: #374151;
+  color: var(--ink);
 }
 
 .status-message {
@@ -3081,8 +3081,8 @@ watch(() => props.reportId, (newId) => {
   margin-top: 8px;
   padding: 4px 10px;
   background: #F9FAFB;
-  color: #6B7280;
-  border: 1px solid #E5E7EB;
+  color: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 12px;
   font-size: 11px;
   font-weight: 500;
@@ -3120,7 +3120,7 @@ watch(() => props.reportId, (newId) => {
 .tag-num {
   font-size: 11px;
   font-weight: 700;
-  color: #6B7280;
+  color: var(--muted);
 }
 
 .section-tag.completed .tag-num {
@@ -3130,7 +3130,7 @@ watch(() => props.reportId, (newId) => {
 .tag-title {
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--ink);
 }
 
 .tool-badge {
@@ -3139,7 +3139,7 @@ watch(() => props.reportId, (newId) => {
   gap: 6px;
   padding: 6px 12px;
   background: #F9FAFB;
-  color: #374151;
+  color: var(--ink);
   border: 1px solid var(--wf-border);
   border-radius: 6px;
   font-size: 12px;
@@ -3215,10 +3215,10 @@ watch(() => props.reportId, (newId) => {
 .tool-badge.tool-gray {
   background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
   border-color: #D1D5DB;
-  color: #374151;
+  color: var(--ink);
 }
 .tool-badge.tool-gray .tool-icon {
-  stroke: #6B7280;
+  stroke: var(--muted);
 }
 
 .tool-params {
@@ -3232,13 +3232,13 @@ watch(() => props.reportId, (newId) => {
 
 .tool-params pre {
   margin: 0;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   color: #4B5563;
   white-space: pre-wrap;
   word-break: break-all;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 10px;
 }
@@ -3246,20 +3246,20 @@ watch(() => props.reportId, (newId) => {
 /* Unified Action Buttons */
 .action-btn {
   background: #F3F4F6;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
-  color: #6B7280;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .action-btn:hover {
-  background: #E5E7EB;
-  color: #374151;
+  background: var(--border);
+  color: var(--ink);
   border-color: #D1D5DB;
 }
 
@@ -3282,13 +3282,13 @@ watch(() => props.reportId, (newId) => {
 .result-tool {
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  color: var(--ink);
 }
 
 .result-size {
   font-size: 10px;
-  color: #6B7280;
-  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+  font-family: var(--font-mono);
 }
 
 .result-raw {
@@ -3299,24 +3299,24 @@ watch(() => props.reportId, (newId) => {
 
 .result-raw pre {
   margin: 0;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   white-space: pre-wrap;
   word-break: break-word;
-  color: #374151;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
   padding: 10px;
   border-radius: 6px;
 }
 
 .raw-preview {
   margin: 0;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   white-space: pre-wrap;
   word-break: break-word;
-  color: #6B7280;
+  color: var(--muted);
 }
 
 /* Legacy toggle-raw removed - using unified .action-btn */
@@ -3332,7 +3332,7 @@ watch(() => props.reportId, (newId) => {
   font-size: 11px;
   padding: 3px 8px;
   background: #F3F4F6;
-  color: #6B7280;
+  color: var(--muted);
   border-radius: 4px;
 }
 
@@ -3373,7 +3373,7 @@ watch(() => props.reportId, (newId) => {
 
 .llm-content pre {
   margin: 0;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   white-space: pre-wrap;
   word-break: break-word;
@@ -3407,8 +3407,8 @@ watch(() => props.reportId, (newId) => {
   padding: 14px 20px;
   font-size: 14px;
   font-weight: 600;
-  color: #FFFFFF;
-  background: #1F2937;
+  color: var(--surface);
+  background: var(--ink);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -3416,7 +3416,7 @@ watch(() => props.reportId, (newId) => {
 }
 
 .next-step-btn:hover {
-  background: #374151;
+  background: var(--ink);
 }
 
 .next-step-btn svg {
@@ -3434,14 +3434,14 @@ watch(() => props.reportId, (newId) => {
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  color: #9CA3AF;
+  color: var(--muted);
   font-size: 13px;
 }
 
 .empty-pulse {
   width: 24px;
   height: 24px;
-  background: #E5E7EB;
+  background: var(--border);
   border-radius: 50%;
   margin-bottom: 16px;
   animation: pulse-ring 1.5s infinite;
@@ -3473,8 +3473,8 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.stat-box) {
   flex: 1;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 10px 8px;
   text-align: center;
@@ -3484,14 +3484,14 @@ watch(() => props.reportId, (newId) => {
   display: block;
   font-size: 20px;
   font-weight: 700;
-  color: #111827;
-  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink);
+  font-family: var(--font-mono);
 }
 
 :deep(.stat-box .stat-label) {
   display: block;
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
   margin-top: 2px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -3508,11 +3508,11 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.stat-box.muted) {
   background: #F9FAFB;
-  border-color: #E5E7EB;
+  border-color: var(--border);
 }
 
 :deep(.stat-box.muted .stat-num) {
-  color: #6B7280;
+  color: var(--muted);
 }
 
 :deep(.query-display) {
@@ -3520,33 +3520,33 @@ watch(() => props.reportId, (newId) => {
   padding: 10px 14px;
   border-radius: 6px;
   font-size: 12px;
-  color: #374151;
+  color: var(--ink);
   margin-bottom: 12px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   line-height: 1.5;
 }
 
 :deep(.expand-details) {
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   padding: 8px 14px;
   border-radius: 6px;
   font-size: 11px;
   font-weight: 500;
-  color: #6B7280;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 :deep(.expand-details:hover) {
   border-color: #D1D5DB;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.detail-content) {
   margin-top: 14px;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 14px;
 }
@@ -3554,7 +3554,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.section-label) {
   font-size: 11px;
   font-weight: 600;
-  color: #6B7280;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 10px;
@@ -3596,7 +3596,7 @@ watch(() => props.reportId, (newId) => {
   border-radius: 6px;
   font-size: 10px;
   font-weight: 700;
-  color: #6B7280;
+  color: var(--muted);
   flex-shrink: 0;
 }
 
@@ -3627,7 +3627,7 @@ watch(() => props.reportId, (newId) => {
   align-items: center;
   gap: 6px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 6px 12px;
 }
@@ -3635,13 +3635,13 @@ watch(() => props.reportId, (newId) => {
 :deep(.chip-name) {
   font-size: 12px;
   font-weight: 500;
-  color: #111827;
+  color: var(--ink);
 }
 
 :deep(.chip-type) {
   font-size: 10px;
-  color: #9CA3AF;
-  background: #E5E7EB;
+  color: var(--muted);
+  background: var(--border);
   padding: 1px 6px;
   border-radius: 3px;
 }
@@ -3667,7 +3667,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.rel-node) {
   font-size: 12px;
   font-weight: 500;
-  color: #111827;
+  color: var(--ink);
   background: #F3F4F6;
   padding: 4px 10px;
   border-radius: 4px;
@@ -3676,7 +3676,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.rel-edge) {
   font-size: 10px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: var(--surface);
   background: #4F46E5;
   padding: 3px 10px;
   border-radius: 10px;
@@ -3702,10 +3702,10 @@ watch(() => props.reportId, (newId) => {
 }
 
 :deep(.interview-display .header-title) {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
   letter-spacing: -0.01em;
 }
 
@@ -3725,12 +3725,12 @@ watch(() => props.reportId, (newId) => {
   font-size: 14px;
   font-weight: 600;
   color: #4F46E5;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
 }
 
 :deep(.interview-display .stat-label) {
   font-size: 11px;
-  color: #9CA3AF;
+  color: var(--muted);
   text-transform: lowercase;
 }
 
@@ -3741,14 +3741,14 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.interview-display .stat-size) {
   font-size: 11px;
-  color: #9CA3AF;
-  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+  font-family: var(--font-mono);
 }
 
 :deep(.interview-display .header-topic) {
   margin-top: 4px;
   font-size: 12px;
-  color: #6B7280;
+  color: var(--muted);
   line-height: 1.5;
 }
 
@@ -3762,7 +3762,7 @@ watch(() => props.reportId, (newId) => {
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: thin;
-  scrollbar-color: #E5E7EB transparent;
+  scrollbar-color: var(--border) transparent;
 }
 
 :deep(.interview-display .agent-tabs::-webkit-scrollbar) {
@@ -3774,7 +3774,7 @@ watch(() => props.reportId, (newId) => {
 }
 
 :deep(.interview-display .agent-tabs::-webkit-scrollbar-thumb) {
-  background: #E5E7EB;
+  background: var(--border);
   border-radius: 2px;
 }
 
@@ -3788,11 +3788,11 @@ watch(() => props.reportId, (newId) => {
   gap: 6px;
   padding: 6px 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 12px;
   font-weight: 500;
-  color: #6B7280;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
@@ -3801,7 +3801,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.interview-display .agent-tab:hover) {
   background: #F3F4F6;
   border-color: #D1D5DB;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.interview-display .agent-tab.active) {
@@ -3817,8 +3817,8 @@ watch(() => props.reportId, (newId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #E5E7EB;
-  color: #6B7280;
+  background: var(--border);
+  color: var(--muted);
   font-size: 10px;
   font-weight: 700;
   border-radius: 50%;
@@ -3831,7 +3831,7 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.interview-display .agent-tab.active .tab-avatar) {
   background: #6366F1;
-  color: #FFFFFF;
+  color: var(--surface);
 }
 
 :deep(.interview-display .tab-name) {
@@ -3862,8 +3862,8 @@ watch(() => props.reportId, (newId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #E5E7EB;
-  color: #6B7280;
+  background: var(--border);
+  color: var(--muted);
   font-size: 14px;
   font-weight: 600;
   border-radius: 50%;
@@ -3878,19 +3878,19 @@ watch(() => props.reportId, (newId) => {
 :deep(.interview-display .profile-name) {
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
   margin-bottom: 2px;
 }
 
 :deep(.interview-display .profile-role) {
   font-size: 11px;
-  color: #6B7280;
+  color: var(--muted);
   margin-bottom: 4px;
 }
 
 :deep(.interview-display .profile-bio) {
   font-size: 11px;
-  color: #9CA3AF;
+  color: var(--muted);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -3951,7 +3951,7 @@ watch(() => props.reportId, (newId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   border-radius: 4px;
@@ -3960,13 +3960,13 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.interview-display .q-badge) {
   background: transparent;
-  color: #9CA3AF;
-  border: 1px solid #E5E7EB;
+  color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 :deep(.interview-display .a-badge) {
   background: #4F46E5;
-  color: #FFFFFF;
+  color: var(--surface);
   border: 1px solid #4F46E5;
 }
 
@@ -3978,7 +3978,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.interview-display .qa-sender) {
   font-size: 11px;
   font-weight: 600;
-  color: #9CA3AF;
+  color: var(--muted);
   margin-bottom: 4px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -3986,7 +3986,7 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.interview-display .qa-text) {
   font-size: 13px;
-  color: #374151;
+  color: var(--ink);
   line-height: 1.6;
 }
 
@@ -4003,7 +4003,7 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.interview-display .placeholder-text) {
   font-style: italic;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 :deep(.interview-display .qa-answer-header) {
@@ -4032,19 +4032,19 @@ watch(() => props.reportId, (newId) => {
   border-radius: 4px;
   font-size: 10px;
   font-weight: 500;
-  color: #9CA3AF;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 :deep(.interview-display .platform-btn:hover) {
-  color: #6B7280;
+  color: var(--muted);
 }
 
 :deep(.interview-display .platform-btn.active) {
   background: transparent;
   color: #4F46E5;
-  border-color: #E5E7EB;
+  border-color: var(--border);
   box-shadow: none;
 }
 
@@ -4054,12 +4054,12 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.interview-display .answer-text) {
   font-size: 13px;
-  color: #111827;
+  color: var(--ink);
   line-height: 1.6;
 }
 
 :deep(.interview-display .answer-text strong) {
-  color: #111827;
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -4073,14 +4073,14 @@ watch(() => props.reportId, (newId) => {
   border-radius: 0;
   font-size: 11px;
   font-weight: 500;
-  color: #9CA3AF;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 :deep(.interview-display .expand-answer-btn:hover) {
   background: transparent;
-  color: #6B7280;
+  color: var(--muted);
   border-bottom-style: solid;
 }
 
@@ -4097,7 +4097,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.interview-display .quotes-header) {
   font-size: 11px;
   font-weight: 600;
-  color: #9CA3AF;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 12px;
@@ -4112,8 +4112,8 @@ watch(() => props.reportId, (newId) => {
 :deep(.interview-display .quote-item) {
   margin: 0;
   padding: 10px 12px;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 12px;
   font-style: italic;
@@ -4134,7 +4134,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.interview-display .summary-header) {
   font-size: 11px;
   font-weight: 600;
-  color: #9CA3AF;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 8px;
@@ -4142,7 +4142,7 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.interview-display .summary-content) {
   font-size: 13px;
-  color: #374151;
+  color: var(--ink);
   line-height: 1.6;
 }
 
@@ -4153,7 +4153,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.interview-display .summary-content h5) {
   margin: 12px 0 8px 0;
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
 }
 
 :deep(.interview-display .summary-content h2) {
@@ -4175,7 +4175,7 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.interview-display .summary-content strong) {
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
 }
 
 :deep(.interview-display .summary-content em) {
@@ -4195,15 +4195,15 @@ watch(() => props.reportId, (newId) => {
 :deep(.interview-display .summary-content blockquote) {
   margin: 8px 0;
   padding-left: 12px;
-  border-left: 3px solid #E5E7EB;
-  color: #6B7280;
+  border-left: 3px solid var(--border);
+  color: var(--muted);
   font-style: italic;
 }
 
 /* Markdown styles in quotes */
 :deep(.interview-display .quote-item strong) {
   font-weight: 600;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.interview-display .quote-item em) {
@@ -4250,7 +4250,7 @@ watch(() => props.reportId, (newId) => {
 }
 
 :deep(.insight-header .stat-value) {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   color: #7C3AED;
 }
@@ -4266,9 +4266,9 @@ watch(() => props.reportId, (newId) => {
 }
 
 :deep(.insight-header .stat-size) {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 :deep(.insight-header .header-topic) {
@@ -4292,7 +4292,7 @@ watch(() => props.reportId, (newId) => {
   gap: 2px;
   padding: 8px 12px;
   background: #FAFAFA;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-top: none;
 }
 
@@ -4306,18 +4306,18 @@ watch(() => props.reportId, (newId) => {
   border-radius: 6px;
   font-size: 11px;
   font-weight: 500;
-  color: #6B7280;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 :deep(.insight-tab:hover) {
   background: #F3F4F6;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.insight-tab.active) {
-  background: #FFFFFF;
+  background: var(--surface);
   color: #7C3AED;
   border-color: #C4B5FD;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -4326,8 +4326,8 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.insight-content) {
   padding: 12px;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-top: none;
   border-radius: 0 0 8px 8px;
 }
@@ -4344,12 +4344,12 @@ watch(() => props.reportId, (newId) => {
 :deep(.insight-display .panel-title) {
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.insight-display .panel-count) {
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 :deep(.insight-display .facts-list),
@@ -4371,7 +4371,7 @@ watch(() => props.reportId, (newId) => {
   gap: 10px;
   padding: 10px 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
@@ -4382,18 +4382,18 @@ watch(() => props.reportId, (newId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #E5E7EB;
+  background: var(--border);
   border-radius: 50%;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  color: #6B7280;
+  color: var(--muted);
 }
 
 :deep(.insight-display .fact-content) {
   flex: 1;
   font-size: 12px;
-  color: #374151;
+  color: var(--ink);
   line-height: 1.6;
 }
 
@@ -4404,7 +4404,7 @@ watch(() => props.reportId, (newId) => {
   gap: 4px;
   padding: 4px 8px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: default;
   transition: all 0.15s ease;
@@ -4418,7 +4418,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.insight-display .entity-tag .entity-name) {
   font-size: 12px;
   font-weight: 500;
-  color: #111827;
+  color: var(--ink);
 }
 
 :deep(.insight-display .entity-tag .entity-type) {
@@ -4431,7 +4431,7 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.insight-display .entity-tag .entity-fact-count) {
   font-size: 9px;
-  color: #9CA3AF;
+  color: var(--muted);
   margin-left: 2px;
 }
 
@@ -4439,7 +4439,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.insight-display .entity-card) {
   padding: 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
@@ -4456,7 +4456,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.insight-display .entity-card .entity-name) {
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--ink);
 }
 
 :deep(.insight-display .entity-card .entity-type) {
@@ -4471,7 +4471,7 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.insight-display .entity-card .entity-fact-count) {
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
   background: #F3F4F6;
   padding: 2px 6px;
   border-radius: 4px;
@@ -4480,9 +4480,9 @@ watch(() => props.reportId, (newId) => {
 :deep(.insight-display .entity-summary) {
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid var(--border);
   font-size: 11px;
-  color: #6B7280;
+  color: var(--muted);
   line-height: 1.5;
 }
 
@@ -4493,19 +4493,19 @@ watch(() => props.reportId, (newId) => {
   gap: 8px;
   padding: 10px 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
 :deep(.insight-display .rel-source),
 :deep(.insight-display .rel-target) {
   padding: 4px 8px;
-  background: #FFFFFF;
+  background: var(--surface);
   border: 1px solid #D1D5DB;
   border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.insight-display .rel-arrow) {
@@ -4537,7 +4537,7 @@ watch(() => props.reportId, (newId) => {
   gap: 10px;
   padding: 10px 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
@@ -4546,15 +4546,15 @@ watch(() => props.reportId, (newId) => {
   padding: 2px 6px;
   background: #7C3AED;
   border-radius: 4px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--surface);
 }
 
 :deep(.insight-display .subquery-text) {
   font-size: 12px;
-  color: #374151;
+  color: var(--ink);
   line-height: 1.5;
 }
 
@@ -4567,11 +4567,11 @@ watch(() => props.reportId, (newId) => {
   margin-top: 12px;
   padding: 8px 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 11px;
   font-weight: 500;
-  color: #6B7280;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
@@ -4581,7 +4581,7 @@ watch(() => props.reportId, (newId) => {
 :deep(.panorama-display .expand-btn:hover),
 :deep(.quick-search-display .expand-btn:hover) {
   background: #F3F4F6;
-  color: #374151;
+  color: var(--ink);
   border-color: #D1D5DB;
 }
 
@@ -4592,7 +4592,7 @@ watch(() => props.reportId, (newId) => {
   padding: 24px;
   text-align: center;
   font-size: 12px;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 /* ========== Enhanced Panorama Display Styles ========== */
@@ -4635,7 +4635,7 @@ watch(() => props.reportId, (newId) => {
 }
 
 :deep(.panorama-header .stat-value) {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   color: #2563EB;
 }
@@ -4651,9 +4651,9 @@ watch(() => props.reportId, (newId) => {
 }
 
 :deep(.panorama-header .stat-size) {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 :deep(.panorama-header .header-topic) {
@@ -4667,7 +4667,7 @@ watch(() => props.reportId, (newId) => {
   gap: 2px;
   padding: 8px 12px;
   background: #FAFAFA;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-top: none;
 }
 
@@ -4681,18 +4681,18 @@ watch(() => props.reportId, (newId) => {
   border-radius: 6px;
   font-size: 11px;
   font-weight: 500;
-  color: #6B7280;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 :deep(.panorama-tab:hover) {
   background: #F3F4F6;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.panorama-tab.active) {
-  background: #FFFFFF;
+  background: var(--surface);
   color: #2563EB;
   border-color: #93C5FD;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -4701,8 +4701,8 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.panorama-content) {
   padding: 12px;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-top: none;
   border-radius: 0 0 8px 8px;
 }
@@ -4719,12 +4719,12 @@ watch(() => props.reportId, (newId) => {
 :deep(.panorama-display .panel-title) {
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.panorama-display .panel-count) {
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 :deep(.panorama-display .facts-list) {
@@ -4738,18 +4738,18 @@ watch(() => props.reportId, (newId) => {
   gap: 10px;
   padding: 10px 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
 :deep(.panorama-display .fact-item.active) {
   background: #F9FAFB;
-  border-color: #E5E7EB;
+  border-color: var(--border);
 }
 
 :deep(.panorama-display .fact-item.historical) {
   background: #F9FAFB;
-  border-color: #E5E7EB;
+  border-color: var(--border);
 }
 
 :deep(.panorama-display .fact-number) {
@@ -4759,37 +4759,37 @@ watch(() => props.reportId, (newId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #E5E7EB;
+  background: var(--border);
   border-radius: 50%;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  color: #6B7280;
+  color: var(--muted);
 }
 
 :deep(.panorama-display .fact-item.active .fact-number) {
-  background: #E5E7EB;
-  color: #6B7280;
+  background: var(--border);
+  color: var(--muted);
 }
 
 :deep(.panorama-display .fact-item.historical .fact-number) {
-  background: #9CA3AF;
-  color: #FFFFFF;
+  background: var(--muted);
+  color: var(--surface);
 }
 
 :deep(.panorama-display .fact-content) {
   flex: 1;
   font-size: 12px;
-  color: #374151;
+  color: var(--ink);
   line-height: 1.6;
 }
 
 :deep(.panorama-display .fact-time) {
   display: block;
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
   margin-bottom: 4px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
 }
 
 :deep(.panorama-display .fact-text) {
@@ -4809,14 +4809,14 @@ watch(() => props.reportId, (newId) => {
   gap: 6px;
   padding: 6px 10px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
 :deep(.panorama-display .entity-name) {
   font-size: 12px;
   font-weight: 500;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.panorama-display .entity-type) {
@@ -4867,7 +4867,7 @@ watch(() => props.reportId, (newId) => {
 }
 
 :deep(.quicksearch-header .stat-value) {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   color: #EA580C;
 }
@@ -4883,9 +4883,9 @@ watch(() => props.reportId, (newId) => {
 }
 
 :deep(.quicksearch-header .stat-size) {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 :deep(.quicksearch-header .header-query) {
@@ -4903,7 +4903,7 @@ watch(() => props.reportId, (newId) => {
   gap: 2px;
   padding: 8px 12px;
   background: #FAFAFA;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-top: none;
 }
 
@@ -4917,18 +4917,18 @@ watch(() => props.reportId, (newId) => {
   border-radius: 6px;
   font-size: 11px;
   font-weight: 500;
-  color: #6B7280;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 :deep(.quicksearch-tab:hover) {
   background: #F3F4F6;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.quicksearch-tab.active) {
-  background: #FFFFFF;
+  background: var(--surface);
   color: #EA580C;
   border-color: #FDBA74;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -4937,8 +4937,8 @@ watch(() => props.reportId, (newId) => {
 
 :deep(.quicksearch-content) {
   padding: 12px;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-top: none;
   border-radius: 0 0 8px 8px;
 }
@@ -4960,12 +4960,12 @@ watch(() => props.reportId, (newId) => {
 :deep(.quick-search-display .panel-title) {
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.quick-search-display .panel-count) {
   font-size: 10px;
-  color: #9CA3AF;
+  color: var(--muted);
 }
 
 :deep(.quick-search-display .facts-list) {
@@ -4979,13 +4979,13 @@ watch(() => props.reportId, (newId) => {
   gap: 10px;
   padding: 10px 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
 :deep(.quick-search-display .fact-item.active) {
   background: #F9FAFB;
-  border-color: #E5E7EB;
+  border-color: var(--border);
 }
 
 :deep(.quick-search-display .fact-number) {
@@ -4995,23 +4995,23 @@ watch(() => props.reportId, (newId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #E5E7EB;
+  background: var(--border);
   border-radius: 50%;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  color: #6B7280;
+  color: var(--muted);
 }
 
 :deep(.quick-search-display .fact-item.active .fact-number) {
-  background: #E5E7EB;
-  color: #6B7280;
+  background: var(--border);
+  color: var(--muted);
 }
 
 :deep(.quick-search-display .fact-content) {
   flex: 1;
   font-size: 12px;
-  color: #374151;
+  color: var(--ink);
   line-height: 1.6;
 }
 
@@ -5028,19 +5028,19 @@ watch(() => props.reportId, (newId) => {
   gap: 8px;
   padding: 10px 12px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
 :deep(.quick-search-display .edge-source),
 :deep(.quick-search-display .edge-target) {
   padding: 4px 8px;
-  background: #FFFFFF;
+  background: var(--surface);
   border: 1px solid #D1D5DB;
   border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.quick-search-display .edge-arrow) {
@@ -5079,14 +5079,14 @@ watch(() => props.reportId, (newId) => {
   gap: 6px;
   padding: 6px 10px;
   background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
 :deep(.quick-search-display .node-name) {
   font-size: 12px;
   font-weight: 500;
-  color: #374151;
+  color: var(--ink);
 }
 
 :deep(.quick-search-display .node-type) {
@@ -5099,10 +5099,10 @@ watch(() => props.reportId, (newId) => {
 
 /* Console Logs - 与 Step3Simulation.vue 保持一致 */
 .console-logs {
-  background: #000;
+  background: var(--ink);
   color: #DDD;
   padding: 16px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   border-top: 1px solid #222;
   flex-shrink: 0;
 }
