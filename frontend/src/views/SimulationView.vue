@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">MIROFISH</div>
+        <div class="brand" @click="router.push('/')">AI SWARM</div>
       </div>
       
       <div class="header-center">
@@ -15,7 +15,7 @@
             :class="{ active: viewMode === mode }"
             @click="viewMode = mode"
           >
-            {{ { graph: '图谱', split: '双栏', workbench: '工作台' }[mode] }}
+            {{ { graph: 'Graph', split: 'Split', workbench: 'Workbench' }[mode] }}
           </button>
         </div>
       </div>
@@ -23,7 +23,7 @@
       <div class="header-right">
         <div class="workflow-step">
           <span class="step-num">Step 2/5</span>
-          <span class="step-name">环境搭建</span>
+          <span class="step-name">World</span>
         </div>
         <div class="step-divider"></div>
         <span class="status-indicator" :class="statusClass">
@@ -46,7 +46,7 @@
         />
       </div>
 
-      <!-- Right Panel: Step2 环境搭建 -->
+      <!-- Right Panel: Step2 World -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
         <Step2EnvSetup
           :simulationId="currentSimulationId"
@@ -137,7 +137,7 @@ const toggleMaximize = (target) => {
 }
 
 const handleGoBack = () => {
-  // 返回到 process 页面
+  // Return to the process page
   if (projectData.value?.project_id) {
     router.push({ name: 'Process', params: { projectId: projectData.value.project_id } })
   } else {
@@ -146,15 +146,15 @@ const handleGoBack = () => {
 }
 
 const handleNextStep = (params = {}) => {
-  addLog('进入 Step 3: 开始模拟')
-  
+  addLog('Proceeding to Step 3: Start simulation')
+
   // 记录模拟轮数配置
   if (params.maxRounds) {
-    addLog(`自定义模拟轮数: ${params.maxRounds} 轮`)
+    addLog(`Custom round count: ${params.maxRounds} rounds`)
   } else {
-    addLog('使用自动配置的模拟轮数')
+    addLog('Using auto-configured round count')
   }
-  
+
   // 构建路由参数
   const routeParams = {
     name: 'SimulationRun',
@@ -184,24 +184,24 @@ const checkAndStopRunningSimulation = async () => {
     const envStatusRes = await getEnvStatus({ simulation_id: currentSimulationId.value })
     
     if (envStatusRes.success && envStatusRes.data?.env_alive) {
-      addLog('检测到模拟环境正在运行，正在关闭...')
-      
+      addLog('Detected running simulation environment, closing...')
+
       // 尝试优雅关闭模拟环境
       try {
-        const closeRes = await closeSimulationEnv({ 
+        const closeRes = await closeSimulationEnv({
           simulation_id: currentSimulationId.value,
           timeout: 10  // 10秒超时
         })
-        
+
         if (closeRes.success) {
-          addLog('✓ 模拟环境已关闭')
+          addLog('✓ Simulation environment closed')
         } else {
-          addLog(`关闭模拟环境失败: ${closeRes.error || '未知错误'}`)
+          addLog(`Failed to close simulation environment: ${closeRes.error || 'Unknown error'}`)
           // 如果优雅关闭失败，尝试强制停止
           await forceStopSimulation()
         }
       } catch (closeErr) {
-        addLog(`关闭模拟环境异常: ${closeErr.message}`)
+        addLog(`Error closing simulation environment: ${closeErr.message}`)
         // 如果优雅关闭异常，尝试强制停止
         await forceStopSimulation()
       }
@@ -209,13 +209,13 @@ const checkAndStopRunningSimulation = async () => {
       // 环境未运行，但可能进程还在，检查模拟状态
       const simRes = await getSimulation(currentSimulationId.value)
       if (simRes.success && simRes.data?.status === 'running') {
-        addLog('检测到模拟状态为运行中，正在停止...')
+        addLog('Detected simulation status running, stopping...')
         await forceStopSimulation()
       }
     }
   } catch (err) {
     // 检查环境状态失败不影响后续流程
-    console.warn('检查模拟状态失败:', err)
+    console.warn('Failed to check simulation status:', err)
   }
 }
 
@@ -226,31 +226,31 @@ const forceStopSimulation = async () => {
   try {
     const stopRes = await stopSimulation({ simulation_id: currentSimulationId.value })
     if (stopRes.success) {
-      addLog('✓ 模拟已强制停止')
+      addLog('✓ Simulation force-stopped')
     } else {
-      addLog(`强制停止模拟失败: ${stopRes.error || '未知错误'}`)
+      addLog(`Failed to force-stop simulation: ${stopRes.error || 'Unknown error'}`)
     }
   } catch (err) {
-    addLog(`强制停止模拟异常: ${err.message}`)
+    addLog(`Error force-stopping simulation: ${err.message}`)
   }
 }
 
 const loadSimulationData = async () => {
   try {
-    addLog(`加载模拟数据: ${currentSimulationId.value}`)
-    
+    addLog(`Loading simulation data: ${currentSimulationId.value}`)
+
     // 获取 simulation 信息
     const simRes = await getSimulation(currentSimulationId.value)
     if (simRes.success && simRes.data) {
       const simData = simRes.data
-      
+
       // 获取 project 信息
       if (simData.project_id) {
         const projRes = await getProject(simData.project_id)
         if (projRes.success && projRes.data) {
           projectData.value = projRes.data
-          addLog(`项目加载成功: ${projRes.data.project_id}`)
-          
+          addLog(`Project loaded successfully: ${projRes.data.project_id}`)
+
           // 获取 graph 数据
           if (projRes.data.graph_id) {
             await loadGraph(projRes.data.graph_id)
@@ -258,10 +258,10 @@ const loadSimulationData = async () => {
         }
       }
     } else {
-      addLog(`加载模拟数据失败: ${simRes.error || '未知错误'}`)
+      addLog(`Failed to load simulation data: ${simRes.error || 'Unknown error'}`)
     }
   } catch (err) {
-    addLog(`加载异常: ${err.message}`)
+    addLog(`Load error: ${err.message}`)
   }
 }
 
@@ -271,10 +271,10 @@ const loadGraph = async (graphId) => {
     const res = await getGraphData(graphId)
     if (res.success) {
       graphData.value = res.data
-      addLog('图谱数据加载成功')
+      addLog('Graph data loaded successfully')
     }
   } catch (err) {
-    addLog(`图谱加载失败: ${err.message}`)
+    addLog(`Failed to load graph: ${err.message}`)
   } finally {
     graphLoading.value = false
   }
@@ -287,11 +287,11 @@ const refreshGraph = () => {
 }
 
 onMounted(async () => {
-  addLog('SimulationView 初始化')
-  
+  addLog('SimulationView initialized')
+
   // 检查并关闭正在运行的模拟（用户从 Step 3 返回时）
   await checkAndStopRunningSimulation()
-  
+
   // 加载模拟数据
   loadSimulationData()
 })
@@ -302,26 +302,26 @@ onMounted(async () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #FFF;
+  background: var(--surface);
   overflow: hidden;
-  font-family: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
 
 /* Header */
 .app-header {
   height: 60px;
-  border-bottom: 1px solid #EAEAEA;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  background: #FFF;
+  background: var(--surface);
   z-index: 100;
   position: relative;
 }
 
 .brand {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 800;
   font-size: 18px;
   letter-spacing: 1px;
@@ -336,7 +336,7 @@ onMounted(async () => {
 
 .view-switcher {
   display: flex;
-  background: #F5F5F5;
+  background: var(--surface-alt);
   padding: 4px;
   border-radius: 6px;
   gap: 4px;
@@ -348,15 +348,15 @@ onMounted(async () => {
   padding: 6px 16px;
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: var(--muted);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .switch-btn.active {
-  background: #FFF;
-  color: #000;
+  background: var(--surface);
+  color: var(--ink);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -374,20 +374,20 @@ onMounted(async () => {
 }
 
 .step-num {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
-  color: #999;
+  color: var(--muted);
 }
 
 .step-name {
   font-weight: 700;
-  color: #000;
+  color: var(--ink);
 }
 
 .step-divider {
   width: 1px;
   height: 14px;
-  background-color: #E0E0E0;
+  background-color: var(--border);
 }
 
 .status-indicator {
@@ -395,7 +395,7 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #666;
+  color: var(--muted);
   font-weight: 500;
 }
 
@@ -403,7 +403,7 @@ onMounted(async () => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #CCC;
+  background: var(--border);
 }
 
 .status-indicator.processing .dot { background: #FF5722; animation: pulse 1s infinite; }
@@ -428,7 +428,7 @@ onMounted(async () => {
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid #EAEAEA;
+  border-right: 1px solid var(--border);
 }
 </style>
 
