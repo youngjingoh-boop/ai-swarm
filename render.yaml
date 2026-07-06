@@ -1,0 +1,27 @@
+# Render Blueprint for the MiroFish backend (ai-swarm).
+# Deploy: push this repo to GitHub, then Render Dashboard -> New -> Blueprint -> pick the repo.
+# Secrets (LLM_API_KEY, ZEP_API_KEY) are marked sync:false — set them in the Render UI.
+services:
+  - type: web
+    name: ai-swarm-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    # NOTE: 'free'/'starter' plans (512MB RAM) will OOM on large runs.
+    # A 1000-agent simulation needs a bigger instance — bump this to 'standard' or higher.
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: LLM_API_KEY
+        sync: false          # set in Render UI
+      - key: ZEP_API_KEY
+        sync: false          # set in Render UI
+      - key: LLM_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: LLM_MODEL_NAME
+        value: llama-3.3-70b-versatile
+      - key: OASIS_DEFAULT_MAX_ROUNDS
+        value: "10"
+      - key: FLASK_DEBUG
+        value: "False"

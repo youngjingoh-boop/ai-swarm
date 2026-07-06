@@ -6,25 +6,24 @@
         <div class="card-header">
           <div class="step-info">
             <span class="step-num">01</span>
-            <span class="step-title">本体生成</span>
+            <span class="step-title">Ontology Generation</span>
           </div>
           <div class="step-status">
-            <span v-if="currentPhase > 0" class="badge success">已完成</span>
-            <span v-else-if="currentPhase === 0" class="badge processing">生成中</span>
-            <span v-else class="badge pending">等待</span>
+            <span v-if="currentPhase > 0" class="badge success">Completed</span>
+            <span v-else-if="currentPhase === 0" class="badge processing">Generating…</span>
+            <span v-else class="badge pending">Pending</span>
           </div>
         </div>
-        
+
         <div class="card-content">
-          <p class="api-note">POST /api/graph/ontology/generate</p>
           <p class="description">
-            LLM分析文档内容与模拟需求，提取出现实种子，自动生成合适的本体结构
+            The LLM analyzes document content and simulation requirements, extracts real-world seeds, and automatically generates a suitable ontology structure.
           </p>
 
           <!-- Loading / Progress -->
           <div v-if="currentPhase === 0 && ontologyProgress" class="progress-section">
             <div class="spinner-sm"></div>
-            <span>{{ ontologyProgress.message || '正在分析文档...' }}</span>
+            <span>{{ ontologyProgress.message || 'Analyzing documents...' }}</span>
           </div>
 
           <!-- Detail Overlay -->
@@ -110,34 +109,33 @@
         <div class="card-header">
           <div class="step-info">
             <span class="step-num">02</span>
-            <span class="step-title">GraphRAG构建</span>
+            <span class="step-title">GraphRAG Build</span>
           </div>
           <div class="step-status">
-            <span v-if="currentPhase > 1" class="badge success">已完成</span>
+            <span v-if="currentPhase > 1" class="badge success">Completed</span>
             <span v-else-if="currentPhase === 1" class="badge processing">{{ buildProgress?.progress || 0 }}%</span>
-            <span v-else class="badge pending">等待</span>
+            <span v-else class="badge pending">Pending</span>
           </div>
         </div>
 
         <div class="card-content">
-          <p class="api-note">POST /api/graph/build</p>
           <p class="description">
-            基于生成的本体，将文档自动分块后调用 Zep 构建知识图谱，提取实体和关系，并形成时序记忆与社区摘要
+            Based on the generated ontology, documents are automatically chunked and passed to Zep to build the knowledge graph, extracting entities and relationships and forming temporal memory and community summaries.
           </p>
-          
+
           <!-- Stats Cards -->
           <div class="stats-grid">
             <div class="stat-card">
               <span class="stat-value">{{ graphStats.nodes }}</span>
-              <span class="stat-label">实体节点</span>
+              <span class="stat-label">Entity nodes</span>
             </div>
             <div class="stat-card">
               <span class="stat-value">{{ graphStats.edges }}</span>
-              <span class="stat-label">关系边</span>
+              <span class="stat-label">Relationship edges</span>
             </div>
             <div class="stat-card">
               <span class="stat-value">{{ graphStats.types }}</span>
-              <span class="stat-label">SCHEMA类型</span>
+              <span class="stat-label">Schema types</span>
             </div>
           </div>
         </div>
@@ -148,23 +146,22 @@
         <div class="card-header">
           <div class="step-info">
             <span class="step-num">03</span>
-            <span class="step-title">构建完成</span>
+            <span class="step-title">Build Complete</span>
           </div>
           <div class="step-status">
-            <span v-if="currentPhase >= 2" class="badge accent">进行中</span>
+            <span v-if="currentPhase >= 2" class="badge accent">In progress</span>
           </div>
         </div>
-        
+
         <div class="card-content">
-          <p class="api-note">POST /api/simulation/create</p>
-          <p class="description">图谱构建已完成，请进入下一步进行模拟环境搭建</p>
-          <button 
-            class="action-btn" 
+          <p class="description">World building is complete. Proceed to the next step to set up the simulation environment.</p>
+          <button
+            class="action-btn"
             :disabled="currentPhase < 2 || creatingSimulation"
             @click="handleEnterEnvSetup"
           >
             <span v-if="creatingSimulation" class="spinner-sm"></span>
-            {{ creatingSimulation ? '创建中...' : '进入环境搭建 ➝' }}
+            {{ creatingSimulation ? 'Creating…' : 'Enter environment setup ➝' }}
           </button>
         </div>
       </div>
@@ -214,9 +211,9 @@ const handleEnterEnvSetup = async () => {
     console.error('缺少项目或图谱信息')
     return
   }
-  
+
   creatingSimulation.value = true
-  
+
   try {
     const res = await createSimulation({
       project_id: props.projectData.project_id,
@@ -224,7 +221,7 @@ const handleEnterEnvSetup = async () => {
       enable_twitter: true,
       enable_reddit: true
     })
-    
+
     if (res.success && res.data?.simulation_id) {
       // 跳转到 simulation 页面
       router.push({
@@ -233,11 +230,11 @@ const handleEnterEnvSetup = async () => {
       })
     } else {
       console.error('创建模拟失败:', res.error)
-      alert('创建模拟失败: ' + (res.error || '未知错误'))
+      alert('Failed to create simulation: ' + (res.error || 'Unknown error'))
     }
   } catch (err) {
     console.error('创建模拟异常:', err)
-    alert('创建模拟异常: ' + err.message)
+    alert('Simulation creation error: ' + err.message)
   } finally {
     creatingSimulation.value = false
   }
@@ -255,7 +252,7 @@ const graphStats = computed(() => {
 })
 
 const formatDate = (dateStr) => {
-  if (!dateStr) return '--:--:--'
+  if (!dateStr) return '—:—:—'
   const d = new Date(dateStr)
   return d.toLocaleTimeString('en-US', { hour12: false }) + '.' + d.getMilliseconds()
 }
@@ -273,7 +270,7 @@ watch(() => props.systemLogs.length, () => {
 <style scoped>
 .workbench-panel {
   height: 100%;
-  background-color: #FAFAFA;
+  background-color: var(--surface-alt);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -290,18 +287,18 @@ watch(() => props.systemLogs.length, () => {
 }
 
 .step-card {
-  background: #FFF;
+  background: var(--surface);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  border: 1px solid #EAEAEA;
+  border: 1px solid var(--border);
   transition: all 0.3s ease;
   position: relative; /* For absolute overlay */
 }
 
 .step-card.active {
-  border-color: #FF5722;
-  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(99, 91, 255, 0.12);
 }
 
 .card-header {
@@ -318,15 +315,15 @@ watch(() => props.systemLogs.length, () => {
 }
 
 .step-num {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 20px;
   font-weight: 700;
-  color: #E0E0E0;
+  color: var(--border);
 }
 
 .step-card.active .step-num,
 .step-card.completed .step-num {
-  color: #000;
+  color: var(--ink);
 }
 
 .step-title {
@@ -344,20 +341,13 @@ watch(() => props.systemLogs.length, () => {
 }
 
 .badge.success { background: #E8F5E9; color: #2E7D32; }
-.badge.processing { background: #FF5722; color: #FFF; }
-.badge.accent { background: #FF5722; color: #FFF; }
-.badge.pending { background: #F5F5F5; color: #999; }
-
-.api-note {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: #999;
-  margin-bottom: 8px;
-}
+.badge.processing { background: var(--accent); color: #FFF; }
+.badge.accent { background: var(--accent); color: #FFF; }
+.badge.pending { background: var(--surface-alt); color: var(--muted); }
 
 .description {
   font-size: 12px;
-  color: #666;
+  color: var(--muted);
   line-height: 1.5;
   margin-bottom: 16px;
 }
@@ -376,7 +366,7 @@ watch(() => props.systemLogs.length, () => {
 .tag-label {
   display: block;
   font-size: 10px;
-  color: #AAA;
+  color: var(--muted);
   margin-bottom: 8px;
   font-weight: 600;
 }
@@ -388,13 +378,13 @@ watch(() => props.systemLogs.length, () => {
 }
 
 .entity-tag {
-  background: #F5F5F5;
-  border: 1px solid #EEE;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-light);
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 11px;
-  color: #333;
-  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink);
+  font-family: var(--font-mono);
   transition: all 0.2s;
 }
 
@@ -403,8 +393,8 @@ watch(() => props.systemLogs.length, () => {
 }
 
 .entity-tag.clickable:hover {
-    background: #E0E0E0;
-    border-color: #CCC;
+    background: var(--border-light);
+    border-color: var(--border);
 }
 
 /* Ontology Detail Overlay */
@@ -417,7 +407,7 @@ watch(() => props.systemLogs.length, () => {
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(4px);
     z-index: 10;
-    border: 1px solid #EAEAEA;
+    border: 1px solid var(--border);
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     border-radius: 6px;
     display: flex;
@@ -433,8 +423,8 @@ watch(() => props.systemLogs.length, () => {
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    border-bottom: 1px solid #EAEAEA;
-    background: #FAFAFA;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-alt);
 }
 
 .detail-title-group {
@@ -447,7 +437,7 @@ watch(() => props.systemLogs.length, () => {
     font-size: 9px;
     font-weight: 700;
     color: #FFF;
-    background: #000;
+    background: var(--ink);
     padding: 2px 6px;
     border-radius: 2px;
     text-transform: uppercase;
@@ -456,20 +446,20 @@ watch(() => props.systemLogs.length, () => {
 .detail-name {
     font-size: 14px;
     font-weight: 700;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
 }
 
 .close-btn {
     background: none;
     border: none;
     font-size: 18px;
-    color: #999;
+    color: var(--muted);
     cursor: pointer;
     line-height: 1;
 }
 
 .close-btn:hover {
-    color: #333;
+    color: var(--ink);
 }
 
 .detail-body {
@@ -480,11 +470,11 @@ watch(() => props.systemLogs.length, () => {
 
 .detail-desc {
     font-size: 12px;
-    color: #444;
+    color: var(--ink);
     line-height: 1.5;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px dashed #EAEAEA;
+    border-bottom: 1px dashed var(--border);
 }
 
 .detail-section {
@@ -495,7 +485,7 @@ watch(() => props.systemLogs.length, () => {
     display: block;
     font-size: 10px;
     font-weight: 600;
-    color: #AAA;
+    color: var(--muted);
     margin-bottom: 8px;
 }
 
@@ -512,23 +502,23 @@ watch(() => props.systemLogs.length, () => {
     gap: 6px;
     align-items: baseline;
     padding: 4px;
-    background: #F9F9F9;
+    background: var(--surface-alt);
     border-radius: 4px;
 }
 
 .attr-name {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
-    color: #000;
+    color: var(--ink);
 }
 
 .attr-type {
-    color: #999;
+    color: var(--muted);
     font-size: 10px;
 }
 
 .attr-desc {
-    color: #555;
+    color: var(--muted);
     flex: 1;
     min-width: 150px;
 }
@@ -541,11 +531,11 @@ watch(() => props.systemLogs.length, () => {
 
 .example-tag {
     font-size: 11px;
-    background: #FFF;
-    border: 1px solid #E0E0E0;
+    background: var(--surface);
+    border: 1px solid var(--border);
     padding: 3px 8px;
     border-radius: 12px;
-    color: #555;
+    color: var(--muted);
 }
 
 .conn-item {
@@ -554,18 +544,18 @@ watch(() => props.systemLogs.length, () => {
     gap: 8px;
     font-size: 11px;
     padding: 6px;
-    background: #F5F5F5;
+    background: var(--surface-alt);
     border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
 }
 
 .conn-node {
     font-weight: 600;
-    color: #333;
+    color: var(--ink);
 }
 
 .conn-arrow {
-    color: #BBB;
+    color: var(--border);
 }
 
 /* Step 02 Stats */
@@ -573,7 +563,7 @@ watch(() => props.systemLogs.length, () => {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
-  background: #F9F9F9;
+  background: var(--surface-alt);
   padding: 16px;
   border-radius: 6px;
 }
@@ -586,13 +576,13 @@ watch(() => props.systemLogs.length, () => {
   display: block;
   font-size: 20px;
   font-weight: 700;
-  color: #000;
-  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink);
+  font-family: var(--font-mono);
 }
 
 .stat-label {
   font-size: 9px;
-  color: #999;
+  color: var(--muted);
   text-transform: uppercase;
   margin-top: 4px;
   display: block;
@@ -601,7 +591,7 @@ watch(() => props.systemLogs.length, () => {
 /* Step 03 Button */
 .action-btn {
   width: 100%;
-  background: #000;
+  background: var(--accent);
   color: #FFF;
   border: none;
   padding: 14px;
@@ -609,15 +599,15 @@ watch(() => props.systemLogs.length, () => {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, background-color 0.2s;
 }
 
 .action-btn:hover:not(:disabled) {
-  opacity: 0.8;
+  background: var(--accent-hover);
 }
 
 .action-btn:disabled {
-  background: #CCC;
+  background: var(--border);
   cursor: not-allowed;
 }
 
@@ -626,15 +616,15 @@ watch(() => props.systemLogs.length, () => {
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: #FF5722;
+  color: var(--accent);
   margin-bottom: 12px;
 }
 
 .spinner-sm {
   width: 14px;
   height: 14px;
-  border: 2px solid #FFCCBC;
-  border-top-color: #FF5722;
+  border: 2px solid var(--border-light);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -643,10 +633,10 @@ watch(() => props.systemLogs.length, () => {
 
 /* System Logs */
 .system-logs {
-  background: #000;
+  background: var(--ink);
   color: #DDD;
   padding: 16px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   border-top: 1px solid #222;
   flex-shrink: 0;
 }

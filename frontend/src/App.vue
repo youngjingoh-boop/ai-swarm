@@ -7,41 +7,30 @@
 </script>
 
 <style>
-/* 全局样式重置 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  --accent: #635bff;
+  --accent-hover: #5249e6;
+  --ink: #1a1f36;
+  --muted: #6b7280;
+  --border: #e2e4ea;
+  --border-light: #edeef2;
+  --surface: #ffffff;
+  --surface-alt: #f7f8fa;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans SC', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 #app {
-  font-family: 'JetBrains Mono', 'Space Grotesk', 'Noto Sans SC', monospace;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--ink);
+  background-color: var(--surface);
 }
-
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #000000;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #333333;
-}
-
-/* 全局按钮样式 */
-button {
-  font-family: inherit;
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--surface-alt); }
+::-webkit-scrollbar-thumb { background: #c2c6d0; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+button { font-family: inherit; }
+a { color: var(--accent); }
 </style>
