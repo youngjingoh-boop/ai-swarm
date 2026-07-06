@@ -2,7 +2,7 @@
   <div class="process-page">
     <!-- Top navigation bar -->
     <nav class="navbar">
-      <div class="nav-brand" @click="goHome">MIROFISH</div>
+      <div class="nav-brand" @click="goHome">AI <span class="accent">Swarm</span></div>
 
       <!-- Center step indicator -->
       <div class="nav-center">
@@ -1112,11 +1112,15 @@ onUnmounted(() => {
 }
 
 .nav-brand {
+  font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
   cursor: pointer;
   transition: opacity 0.2s;
+}
+
+.nav-brand .accent {
+  color: var(--accent);
 }
 
 .nav-brand:hover {
