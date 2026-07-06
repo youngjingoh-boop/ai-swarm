@@ -1,3 +1,15 @@
+# AI Swarm — Predicting future.
+
+Upload any report. AI Swarm builds a parallel world of AI agents from it, runs the
+future forward, and hands you the prediction.
+
+**Attribution:** AI Swarm is a rebranded fork of
+[MiroFish](https://github.com/666ghj/MiroFish) by the MiroFish team (Shanda Group),
+used under the [AGPL-3.0](./LICENSE) license. Full source of this modified version is
+available via the Source link in the app footer. Original documentation follows below.
+
+---
+
 <div align="center">
 
 <img src="./static/image/MiroFish_logo_compressed.jpeg" alt="MiroFish Logo" width="75%"/>

@@ -1,9 +1,9 @@
-# Render Blueprint for the MiroFish backend (jason-1000-agents).
+# Render Blueprint for the MiroFish backend (ai-swarm).
 # Deploy: push this repo to GitHub, then Render Dashboard -> New -> Blueprint -> pick the repo.
 # Secrets (LLM_API_KEY, ZEP_API_KEY) are marked sync:false — set them in the Render UI.
 services:
   - type: web
-    name: jason-1000-agents-backend
+    name: ai-swarm-backend
     runtime: docker
     rootDir: backend
     dockerfilePath: ./Dockerfile

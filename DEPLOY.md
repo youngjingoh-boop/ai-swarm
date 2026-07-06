@@ -1,4 +1,4 @@
-# Deploy: jason-1000-agents
+# Deploy: ai-swarm
 
 Split deploy — **frontend on Vercel**, **backend on Render** (persistent container, needed for
 long-running simulations). Everything below is prepared; you just run the auth + deploy steps
@@ -12,11 +12,14 @@ Both platforms deploy from a **GitHub repo**, so step 0 is pushing this code up.
 
 ```bash
 cd /Users/youngjinkoh/Miro-Fish/MiroFish
-git init && git add . && git commit -m "Prep jason-1000-agents split deploy"
-gh repo create jason-1000-agents --private --source=. --push   # or create manually + git push
+git init && git add . && git commit -m "Prep ai-swarm split deploy"
+gh repo create ai-swarm --private --source=. --push   # or create manually + git push
 ```
 
 > `.env` is git-ignored — your keys are NOT pushed. You'll set them in each dashboard instead.
+
+> After pushing the fork, set `SOURCE_REPO_URL` in `frontend/src/branding.js` to point at your
+> fork's URL — the app footer's "Source" link reads from this constant.
 
 ---
 
@@ -24,12 +27,12 @@ gh repo create jason-1000-agents --private --source=. --push   # or create manua
 
 Files already prepared: `backend/Dockerfile`, `backend/.dockerignore`, `render.yaml`.
 
-1. https://dashboard.render.com → **New → Blueprint** → pick the `jason-1000-agents` repo.
-   Render reads `render.yaml` and creates the `jason-1000-agents-backend` web service.
+1. https://dashboard.render.com → **New → Blueprint** → pick the `ai-swarm` repo.
+   Render reads `render.yaml` and creates the `ai-swarm-backend` web service.
 2. When prompted, fill the two secret env vars (marked `sync:false`):
    - `LLM_API_KEY`  → your Groq key (from `.env`)
    - `ZEP_API_KEY`  → your Zep key (from `.env`)
-3. Deploy. When live, copy the URL, e.g. `https://jason-1000-agents-backend.onrender.com`
+3. Deploy. When live, copy the URL, e.g. `https://ai-swarm-backend.onrender.com`
 4. Sanity check: visiting `<that-url>/health` should return `{"status":"ok",...}`
 
 > ⚠️ **1000 agents needs muscle.** The `free` plan (512 MB) will OOM on a large run. Bump
@@ -47,16 +50,16 @@ File already prepared: `frontend/vercel.json` (Vite build + SPA rewrite).
 npm i -g vercel                 # if not installed
 cd /Users/youngjinkoh/Miro-Fish/MiroFish/frontend
 vercel login                    # interactive — opens browser
-vercel link                     # create/link project; name it: jason-1000-agents
+vercel link                     # create/link project; name it: ai-swarm
 
 # Point the frontend at the Render backend from step 1:
 vercel env add VITE_API_BASE_URL production
-#   paste: https://jason-1000-agents-backend.onrender.com   (NO trailing slash)
+#   paste: https://ai-swarm-backend.onrender.com   (NO trailing slash)
 
 vercel --prod                   # build + deploy; prints your live https URL
 ```
 
-The printed `https://jason-1000-agents.vercel.app` (or similar) is your shareable link.
+The printed `https://ai-swarm.vercel.app` (or similar) is your shareable link.
 
 ---
 
@@ -64,7 +67,7 @@ The printed `https://jason-1000-agents.vercel.app` (or similar) is your shareabl
 
 1. Open the Vercel URL — landing page loads.
 2. Open DevTools → Network, start a small run — API calls should hit
-   `https://jason-1000-agents-backend.onrender.com/api/...` and return 200 (not localhost, not 404).
+   `https://ai-swarm-backend.onrender.com/api/...` and return 200 (not localhost, not 404).
 3. If calls fail: re-check `VITE_API_BASE_URL` (must be set for the **production** env, no trailing
    slash) and that `/health` on the backend is green.
 
