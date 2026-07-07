@@ -61,6 +61,22 @@ vercel --prod                   # build + deploy; prints your live https URL
 
 The printed `https://ai-swarm.vercel.app` (or similar) is your shareable link.
 
+### 2a. Attach the branded subdomain `aiswarm.unchurn.co`
+
+This app deploys as its own Vercel project served from `/` — so it lives on a
+**subdomain**, NOT a subpath of the main site (a subpath would require changes to
+the unchurn.co project's routing + a Vite base-path rebuild; the subdomain avoids both).
+
+1. Vercel → the `ai-swarm` project → **Settings → Domains → Add** → `aiswarm.unchurn.co`.
+2. Vercel shows a DNS record to create. At the DNS host for `unchurn.co`, add:
+   `CNAME  aiswarm  →  cname.vercel-dns.com`
+3. Wait for propagation; Vercel auto-issues the TLS cert. Live at `https://aiswarm.unchurn.co`.
+
+> The repo is already pushed to `https://github.com/youngjingoh-boop/ai-swarm` and
+> `SOURCE_REPO_URL` in `frontend/src/branding.js` already points at it. **Make that repo
+> public before real users hit the hosted app** — the footer "Source" link is your AGPL §13
+> source offer and must resolve for them.
+
 ---
 
 ## 3. Verify end-to-end

@@ -2,5 +2,5 @@
 export const APP_NAME = 'AI Swarm'
 export const APP_TAGLINE = 'Predicting future.'
 export const UPSTREAM_URL = 'https://github.com/666ghj/MiroFish'
-// Update to your own fork URL after pushing (AGPL §13 source offer).
-export const SOURCE_REPO_URL = 'https://github.com/666ghj/MiroFish'
+// Your fork — the AGPL §13 source offer for the hosted instance.
+export const SOURCE_REPO_URL = 'https://github.com/youngjingoh-boop/ai-swarm'
