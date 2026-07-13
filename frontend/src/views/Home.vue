@@ -13,36 +13,112 @@
     <div class="main-content">
       <!-- Hero -->
       <section class="hero-section">
-        <p class="kicker">SWARM INTELLIGENCE ENGINE</p>
-        <h1 class="hero-title">Rehearse the future before it happens.</h1>
-        <p class="hero-sub">
-          Upload any report. AI Swarm builds a parallel world of AI agents from it,
-          runs the future forward, and hands you the prediction.
+        <p class="kicker">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span class="counter">{{ agentCountLabel }}</span> AI PEOPLE, READY TO LIVE OUT YOUR QUESTION
         </p>
+        <h1 class="hero-title">Ask 1,000 AI people<br />what happens next.</h1>
+        <p class="hero-sub">
+          Upload a report, a plan, a story. AI Swarm reads it and generates a whole
+          society of AI personas — customers, investors, skeptics, fans — then lets
+          them live it out and shows you how it ends.
+        </p>
+        <button class="hero-cta" @click="scrollToUpload">Run a prediction →</button>
 
-        <!-- Swarm motif -->
-        <div class="swarm-motif" aria-hidden="true">
-          <span class="dot dot-lg" style="top: 40%; left: 46%; animation-delay: 0s;"></span>
-          <span class="dot dot-md" style="top: 20%; left: 30%; animation-delay: 0.4s;"></span>
-          <span class="dot dot-sm" style="top: 15%; left: 60%; animation-delay: 0.8s;"></span>
-          <span class="dot dot-xs" style="top: 55%; left: 20%; animation-delay: 1.2s;"></span>
-          <span class="dot dot-md" style="top: 65%; left: 62%; animation-delay: 1.6s;"></span>
-          <span class="dot dot-lg" style="top: 30%; left: 70%; animation-delay: 2s;"></span>
-          <span class="dot dot-sm" style="top: 75%; left: 40%; animation-delay: 2.4s;"></span>
-          <span class="dot dot-xs" style="top: 10%; left: 45%; animation-delay: 2.8s;"></span>
-          <span class="dot dot-md" style="top: 50%; left: 12%; animation-delay: 3.2s;"></span>
-          <span class="dot dot-sm" style="top: 68%; left: 78%; animation-delay: 3.6s;"></span>
-          <span class="dot dot-xs" style="top: 35%; left: 15%; animation-delay: 4s;"></span>
-          <span class="dot dot-lg" style="top: 58%; left: 52%; animation-delay: 4.4s;"></span>
+        <!-- Persona field: the swarm, made visible -->
+        <div class="persona-field" aria-hidden="true">
+          <div class="field-backdrop"></div>
+
+          <!-- The question the swarm is answering -->
+          <div class="question-card">
+            <span class="q-label">YOUR QUESTION</span>
+            <span class="q-text">"Will the new pricing land?"</span>
+            <div class="consensus">
+              <div class="consensus-bar">
+                <span class="seg seg-a" style="width: 62%"></span>
+                <span class="seg seg-b" style="width: 23%"></span>
+                <span class="seg seg-c" style="width: 15%"></span>
+              </div>
+              <div class="consensus-legend">
+                <span><i class="sw sw-a"></i>62% adopt</span>
+                <span><i class="sw sw-b"></i>23% hesitate</span>
+                <span><i class="sw sw-c"></i>15% churn</span>
+              </div>
+              <span class="consensus-caption">consensus after 6 simulated weeks</span>
+            </div>
+          </div>
+
+          <!-- Floating persona chips -->
+          <div
+            v-for="(p, i) in personas"
+            :key="p.n"
+            class="persona-chip"
+            :class="p.depth"
+            :style="{ top: p.y, left: p.x, animationDelay: (i * 0.12) + 's', '--drift-delay': (i * 0.7) + 's' }"
+          >
+            <span class="chip-avatar">{{ p.i }}</span>
+            <span class="chip-meta">
+              <span class="chip-name">{{ p.n }}</span>
+              <span class="chip-role">{{ p.r }}</span>
+            </span>
+            <span v-if="p.q" class="chip-bubble" :style="{ animationDelay: p.qd }">{{ p.q }}</span>
+          </div>
+
+          <div class="more-chip">+ 988 more, generated from your document</div>
         </div>
+      </section>
 
-        <button class="scroll-down-btn" @click="scrollToBottom" aria-label="Scroll down">
-          ↓
-        </button>
+      <!-- Meet your swarm -->
+      <section class="meet-swarm">
+        <p class="eyebrow">THE SWARM</p>
+        <h2 class="section-title">Meet a few of the thousand.</h2>
+        <div class="persona-grid">
+          <article v-for="c in featured" :key="c.n" class="persona-card">
+            <div class="card-head">
+              <span class="card-avatar">{{ c.i }}</span>
+              <div>
+                <div class="card-name">{{ c.n }}, {{ c.age }}</div>
+                <div class="card-role">{{ c.r }} · {{ c.mbti }}</div>
+              </div>
+            </div>
+            <div class="card-traits">
+              <span v-for="t in c.traits" :key="t" class="trait">{{ t }}</span>
+            </div>
+            <p class="card-quote">“{{ c.quote }}”</p>
+          </article>
+        </div>
+        <p class="swarm-note">
+          …and 997 more — each generated from <em>your</em> document, with demographics,
+          motivations, and memory. After the run, you can interview any of them.
+        </p>
+      </section>
+
+      <!-- How it works -->
+      <section class="how-it-works">
+        <p class="eyebrow">HOW IT WORKS</p>
+        <div class="steps-grid">
+          <div class="step">
+            <span class="step-num">01</span>
+            <h3 class="step-title">Upload your world</h3>
+            <p class="step-desc">A market report, a business plan, a chapter — anything with people and stakes in it.</p>
+          </div>
+          <div class="step">
+            <span class="step-num">02</span>
+            <h3 class="step-title">The swarm comes alive</h3>
+            <p class="step-desc">AI Swarm maps who matters, then generates up to 1,000 personas that think for themselves.</p>
+          </div>
+          <div class="step">
+            <span class="step-num">03</span>
+            <h3 class="step-title">Read the future</h3>
+            <p class="step-desc">They interact for simulated weeks. You get the prediction report — and can question anyone in it.</p>
+          </div>
+        </div>
       </section>
 
       <!-- Upload card -->
-      <section class="upload-section">
+      <section class="upload-section" ref="uploadSection">
+        <p class="eyebrow">START</p>
+        <h2 class="section-title">Put your question to the swarm.</h2>
         <div class="upload-card">
           <div
             class="drop-zone"
@@ -97,22 +173,6 @@
         </div>
       </section>
 
-      <!-- How it works -->
-      <section class="how-it-works">
-        <div class="step">
-          <span class="step-num">01</span>
-          <span class="step-label">Upload seed</span>
-        </div>
-        <div class="step">
-          <span class="step-num">02</span>
-          <span class="step-label">Simulate the swarm</span>
-        </div>
-        <div class="step">
-          <span class="step-num">03</span>
-          <span class="step-label">Read the future</span>
-        </div>
-      </section>
-
       <!-- Past projects -->
       <section class="past-projects">
         <h2 class="section-heading">Past projects</h2>
@@ -125,7 +185,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import HistoryDatabase from '../components/HistoryDatabase.vue'
 import AppFooter from '../components/AppFooter.vue'
@@ -148,6 +208,62 @@ const isDragOver = ref(false)
 
 // 文件输入引用
 const fileInput = ref(null)
+
+// Hero: live agent counter
+const agentCount = ref(0)
+const agentCountLabel = computed(() => agentCount.value.toLocaleString('en-US'))
+
+onMounted(() => {
+  const target = 1000
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce) {
+    agentCount.value = target
+    return
+  }
+  const t0 = performance.now()
+  const dur = 1600
+  const tick = (t) => {
+    const p = Math.min((t - t0) / dur, 1)
+    agentCount.value = Math.round(target * (1 - Math.pow(1 - p, 3)))
+    if (p < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+})
+
+// Persona field data — the visible slice of the swarm
+const personas = [
+  { n: 'Maya Chen', r: 'Product manager', i: 'MC', x: '6%', y: '16%', depth: 'near', q: '“I’d switch if onboarding takes under a day.”', qd: '1.2s' },
+  { n: 'Derek Okafor', r: 'Skeptical CFO', i: 'DO', x: '74%', y: '10%', depth: 'near', q: '“Show me the payback period.”', qd: '4.2s' },
+  { n: 'Aki Tanaka', r: 'Student', i: 'AT', x: '66%', y: '68%', depth: 'near', q: '“My whole group chat knows by tonight.”', qd: '7.2s' },
+  { n: 'Rosa Alvarez', r: 'Business owner', i: 'RA', x: '2%', y: '62%', depth: 'mid' },
+  { n: 'Ben Carter', r: 'Tech journalist', i: 'BC', x: '30%', y: '4%', depth: 'mid' },
+  { n: 'Priya Nair', r: 'Retail investor', i: 'PN', x: '86%', y: '42%', depth: 'mid' },
+  { n: 'Sam Whitmore', r: 'Longtime customer', i: 'SW', x: '22%', y: '76%', depth: 'mid' },
+  { n: 'Ingrid Ström', r: 'Designer', i: 'IS', x: '48%', y: '84%', depth: 'far' },
+  { n: 'Omar Haddad', r: 'Growth marketer', i: 'OH', x: '92%', y: '74%', depth: 'far' },
+  { n: 'Nina Petrova', r: 'Community mod', i: 'NP', x: '14%', y: '38%', depth: 'far' },
+  { n: 'Jae Park', r: 'Data analyst', i: 'JP', x: '58%', y: '30%', depth: 'far' },
+  { n: 'Luca Romano', r: 'Early adopter', i: 'LR', x: '38%', y: '58%', depth: 'far' }
+]
+
+// Featured persona cards
+const featured = [
+  {
+    n: 'Maya Chen', age: 34, r: 'PRODUCT MANAGER', mbti: 'ENFJ', i: 'MC',
+    traits: ['pragmatic', 'time-poor', 'team-first'],
+    quote: 'I don’t buy tools. I buy time. Convince me in the first week or lose me.'
+  },
+  {
+    n: 'Derek Okafor', age: 51, r: 'CFO', mbti: 'ISTJ', i: 'DO',
+    traits: ['risk-averse', 'numbers-first'],
+    quote: 'Every pitch sounds great. Payback period or it didn’t happen.'
+  },
+  {
+    n: 'Aki Tanaka', age: 22, r: 'STUDENT', mbti: 'ENFP', i: 'AT',
+    traits: ['trend-driven', 'vocal online'],
+    quote: 'If it’s cool, my whole group chat knows by tonight. If it’s not, they know that too.'
+  }
+]
 
 // 计算属性:是否可以提交
 const canSubmit = computed(() => {
@@ -200,12 +316,10 @@ const removeFile = (index) => {
   files.value.splice(index, 1)
 }
 
-// 滚动到底部
-const scrollToBottom = () => {
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: 'smooth'
-  })
+// Scroll to the upload card
+const uploadSection = ref(null)
+const scrollToUpload = () => {
+  uploadSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 // 开始模拟 - 立即跳转，API调用在Process页面进行
@@ -276,11 +390,29 @@ const startSimulation = () => {
   padding: 0 40px;
 }
 
+/* Shared section headings */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: clamp(26px, 3.4vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--ink);
+  margin-bottom: 40px;
+}
+
 /* Hero */
 .hero-section {
-  max-width: 720px;
   margin: 0 auto;
-  padding: 120px 0 80px;
+  padding: 96px 0 72px;
   text-align: center;
   position: relative;
 }
@@ -290,96 +422,416 @@ const startSimulation = () => {
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--muted);
   margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kicker .counter {
+  color: var(--accent);
+  font-weight: 700;
+  min-width: 4ch;
+  text-align: right;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 91, 255, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(99, 91, 255, 0); }
 }
 
 .hero-title {
-  font-size: clamp(40px, 6vw, 64px);
+  font-size: clamp(42px, 6.4vw, 72px);
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   color: var(--ink);
   margin-bottom: 24px;
 }
 
 .hero-sub {
   font-size: 1.15rem;
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--muted);
-  max-width: 560px;
-  margin: 0 auto;
+  max-width: 600px;
+  margin: 0 auto 32px;
 }
 
-/* Swarm motif */
-.swarm-motif {
-  position: relative;
-  width: 100%;
-  max-width: 360px;
-  height: 320px;
-  margin: 56px auto 0;
-}
-
-.dot {
-  position: absolute;
-  border-radius: 50%;
+.hero-cta {
   background: var(--accent);
-  animation: float 4.5s ease-in-out infinite alternate;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
 }
 
-.dot-xs {
-  width: 6px;
-  height: 6px;
-  opacity: 0.3;
+.hero-cta:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
-.dot-sm {
-  width: 10px;
-  height: 10px;
-  opacity: 0.5;
+/* ===== Persona field — the signature ===== */
+.persona-field {
+  position: relative;
+  max-width: 920px;
+  height: 460px;
+  margin: 64px auto 0;
 }
 
-.dot-md {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
+.field-backdrop {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(99, 91, 255, 0.14) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse 65% 60% at 50% 50%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 65% 60% at 50% 50%, #000 30%, transparent 75%);
 }
 
-.dot-lg {
-  width: 22px;
-  height: 22px;
-  opacity: 1;
-}
-
-@keyframes float {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-18px); }
-}
-
-.scroll-down-btn {
-  width: 40px;
-  height: 40px;
+/* Question card at the center */
+.question-card {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background: var(--surface);
   border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(26, 31, 54, 0.1);
+  z-index: 3;
+  text-align: left;
+  animation: chipIn 0.7s 0.5s both;
+}
+
+.q-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.q-text {
+  display: block;
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.consensus-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.seg { height: 100%; border-radius: 2px; }
+.seg-a { background: var(--accent); }
+.seg-b { background: rgba(99, 91, 255, 0.35); }
+.seg-c { background: var(--border); }
+
+.consensus-legend {
+  display: flex;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.consensus-legend span { display: flex; align-items: center; gap: 4px; }
+.sw { width: 7px; height: 7px; border-radius: 2px; display: inline-block; }
+.sw-a { background: var(--accent); }
+.sw-b { background: rgba(99, 91, 255, 0.35); }
+.sw-c { background: var(--border); }
+
+.consensus-caption {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+/* Persona chips */
+.persona-chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px 6px 6px;
+  box-shadow: 0 4px 16px rgba(26, 31, 54, 0.07);
+  white-space: nowrap;
+  animation: chipIn 0.6s both, drift 7s var(--drift-delay, 0s) ease-in-out infinite alternate;
+}
+
+.persona-chip.near { z-index: 4; }
+.persona-chip.mid { opacity: 0.82; transform: scale(0.9); z-index: 2; }
+.persona-chip.far { opacity: 0.55; transform: scale(0.78); filter: blur(0.4px); z-index: 1; }
+
+.chip-avatar {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: transparent;
+  background: rgba(99, 91, 255, 0.12);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.72rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  color: var(--accent);
-  font-size: 1.1rem;
-  margin: 40px auto 0;
-  transition: all 0.2s;
+  flex-shrink: 0;
 }
 
-.scroll-down-btn:hover {
-  border-color: var(--accent);
+.chip-meta {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.chip-name {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+
+.chip-role {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+
+/* Speech bubbles: one persona speaks at a time */
+.chip-bubble {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 12px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border-bottom-left-radius: 2px;
+  max-width: 230px;
+  white-space: normal;
+  opacity: 0;
+  animation: speak 9s infinite;
+  pointer-events: none;
+}
+
+@keyframes speak {
+  0%, 8% { opacity: 0; transform: translateY(4px); }
+  12%, 30% { opacity: 1; transform: translateY(0); }
+  36%, 100% { opacity: 0; transform: translateY(4px); }
+}
+
+.more-chip {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
   background: var(--surface-alt);
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+  padding: 7px 16px;
+  animation: chipIn 0.6s 1.6s both;
 }
 
-/* Upload card */
+@keyframes chipIn {
+  from { opacity: 0; transform: translateY(14px); }
+  /* no `to` frame: elements settle at their own computed opacity/transform,
+     so depth layers (.mid/.far) keep their reduced opacity after entry */
+}
+
+/* entry animation ends at default transform; depth scaling folded into drift */
+.persona-chip.mid { animation: chipIn 0.6s both, driftMid 7s var(--drift-delay, 0s) ease-in-out infinite alternate; }
+.persona-chip.far { animation: chipIn 0.6s both, driftFar 8s var(--drift-delay, 0s) ease-in-out infinite alternate; }
+
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+@keyframes driftMid {
+  from { transform: scale(0.9) translateY(0); }
+  to { transform: scale(0.9) translateY(-10px); }
+}
+
+@keyframes driftFar {
+  from { transform: scale(0.78) translateY(0); }
+  to { transform: scale(0.78) translateY(-8px); }
+}
+
+/* ===== Meet your swarm ===== */
+.meet-swarm {
+  padding: 72px 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.persona-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  background: var(--surface);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.persona-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(26, 31, 54, 0.08);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(99, 91, 255, 0.12);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.card-role {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.card-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.trait {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  background: var(--surface-alt);
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.card-quote {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.swarm-note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.92rem;
+  max-width: 560px;
+  margin: 32px auto 0;
+  line-height: 1.6;
+}
+
+.swarm-note em {
+  color: var(--ink);
+  font-style: italic;
+}
+
+/* ===== How it works ===== */
+.how-it-works {
+  padding: 72px 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-top: 28px;
+}
+
+.step { text-align: left; }
+
+.step-num {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.step-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ===== Upload card ===== */
 .upload-section {
-  padding: 0 0 80px;
+  padding: 72px 0 80px;
+  border-top: 1px solid var(--border-light);
 }
 
 .upload-card {
@@ -542,35 +994,6 @@ const startSimulation = () => {
   cursor: not-allowed;
 }
 
-/* How it works */
-.how-it-works {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 48px;
-  padding: 40px 0;
-  border-top: 1px solid var(--border-light);
-  margin-bottom: 80px;
-}
-
-.step {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.step-num {
-  font-family: var(--font-mono);
-  color: var(--accent);
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.step-label {
-  color: var(--ink);
-  font-size: 0.95rem;
-}
-
 /* Past projects */
 .past-projects {
   padding-bottom: 80px;
@@ -587,7 +1010,35 @@ const startSimulation = () => {
   text-align: center;
 }
 
+/* Reduced motion: everything lands instantly, nothing drifts */
+@media (prefers-reduced-motion: reduce) {
+  .persona-chip,
+  .question-card,
+  .more-chip,
+  .live-dot {
+    animation: none !important;
+  }
+  .chip-bubble {
+    animation: none !important;
+    opacity: 0;
+  }
+  .persona-chip.mid { transform: scale(0.9); }
+  .persona-chip.far { transform: scale(0.78); }
+}
+
 /* Responsive */
+@media (max-width: 900px) {
+  .persona-grid,
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .persona-field {
+    height: 520px;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
     padding: 0 20px;
@@ -598,15 +1049,29 @@ const startSimulation = () => {
   }
 
   .hero-section {
-    padding: 72px 0 48px;
+    padding: 64px 0 48px;
   }
 
   .upload-card {
     padding: 24px;
   }
 
-  .how-it-works {
-    gap: 24px;
+  /* Persona field on small screens: hide the far layer, tighten */
+  .persona-chip.far {
+    display: none;
+  }
+
+  .chip-bubble {
+    display: none;
+  }
+
+  .question-card {
+    width: 260px;
+  }
+
+  .kicker {
+    flex-wrap: wrap;
+    padding: 0 8px;
   }
 }
 </style>
